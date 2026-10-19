@@ -70,6 +70,7 @@ O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. El
 - [Auditoria de execução e revisão visual da v0.2.1](docs/auditorias/2026-10-19-execucao.md).
 - [Resultados técnicos e limitações conhecidas](docs/results.md).
 - [Investigação futura de controles por ADB](docs/experiments.md).
+- [Pesquisa: permissões avançadas e “Só relógio”](docs/referencias/permissoes-e-so-relogio.md).
 - [Assinatura e publicação](docs/releases.md).
 - [Estudo do Flashpay: atalhos, interface e limites](docs/referencias/flashpay-wearos.md).
 

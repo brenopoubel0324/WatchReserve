@@ -58,6 +58,8 @@ Entrega publicada: **v0.2.0**, com APK `WatchReserve-0.2.0.apk`. Application ID 
 
 ## Controles futuros e reversibilidade
 
+Prioridade reafirmada pelo usuário após a v0.2.1: avançar em ações reais de redução de consumo com permissões avançadas, além dos atalhos. [Pesquisa registrada](../referencias/permissoes-e-so-relogio.md): AOSP/Buoy sustentam a investigação da política de economia; DNDSync fornece um exemplo Wear OS/Samsung com permissão via ADB. Nenhuma referência comprova funcionamento no Watch8 ou ativação direta de “Só relógio”. A prévia atual continua sem escritas globais. Protótipos podem ser desenvolvidos e verificados em emulador; o aceite de cada controle ainda exige aplicação e restauração no firmware real.
+
 Economia padrão, localização, brilho e tempo de tela são investigações separadas. Escrever e reler uma chave não prova o efeito no relógio; confirmar por API independente, interface e comportamento. Para economia padrão, incluir recarga e reinício.
 
 Uma eventual implementação de controles deve manter uma única sessão persistente dos valores anteriores e dos resultados confirmados. Reaplicar não sobrescreve o registro original; restauração preserva conflitos com mudanças posteriores do usuário. Permissões revogadas e falhas parciais devem aparecer no resultado. O registro fica excluído do backup, com recuperação manual documentada. Desinstalar não restaura configurações do sistema.

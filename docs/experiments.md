@@ -2,9 +2,13 @@
 
 **Nenhum controle desta página está habilitado na prévia.** O app não pede `WRITE_SECURE_SETTINGS` e o diagnóstico não executa `pm grant` nem escreve configurações. Esta etapa depende de conexão e testes físicos posteriores; foi adiada junto com a instalação do relógio.
 
+Pesquisa e protótipos podem avançar sem conectar o relógio; a liberação como recurso funcional depende da comprovação no firmware real. A [pesquisa de permissões e “Só relógio” em 19/10/2026](referencias/permissoes-e-so-relogio.md) encontrou referências Android e Galaxy Watch para controles diretos. O objetivo do próximo incremento é aplicação e restauração verificáveis; a central de atalhos atual é uma base, não a conclusão do objetivo de economia.
+
 ## Critério para liberar um controle
 
 Investigue separadamente economia padrão, localização, brilho e tempo de tela. Primeiro identifique a interface suportada no firmware. Confirme aplicação por uma API independente, interface Samsung e comportamento observado; escrever e reler o mesmo campo não basta.
+
+Investigue também a política `battery_saver_constants`, por parâmetro, sem presumir que opções AOSP são respeitadas pela Samsung. Preserve os demais campos e compare com a política já ativa: o usuário já utiliza economia de energia e reaplicar restrições existentes não demonstra ganho adicional. LTE, CPU e “Só relógio” não estão automaticamente liberados por uma permissão de escrita de configurações.
 
 Para economia padrão, inclua desligar e reativar manualmente, recarga e reinício. A máquina de estados do Android pode manter efeitos relacionados à economia além de uma chave isolada; o comportamento de referência não comprova equivalência com a implementação Samsung. [Código do BatterySaverStateMachine no Android](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/services/core/java/com/android/server/power/batterysaver/BatterySaverStateMachine.java)
 
