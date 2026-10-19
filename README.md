@@ -19,7 +19,7 @@ O app não precisa permanecer aberto e não usa monitoramento contínuo, sensore
 
 ## Instalar e usar
 
-**[Baixar APK da prévia v0.2.0](https://github.com/brenopoubel0324/WatchReserve/releases/download/v0.2.0/WatchReserve-0.2.0.apk)** · [Checksum SHA-256](https://github.com/brenopoubel0324/WatchReserve/releases/download/v0.2.0/WatchReserve-0.2.0.apk.sha256)
+**[Baixar APK da prévia v0.2.1](https://github.com/brenopoubel0324/WatchReserve/releases/download/v0.2.1/WatchReserve-0.2.1.apk)** · [Checksum SHA-256](https://github.com/brenopoubel0324/WatchReserve/releases/download/v0.2.1/WatchReserve-0.2.1.apk.sha256)
 
 Baixe um APK em [Releases](https://github.com/brenopoubel0324/WatchReserve/releases), confira as notas da versão e siga o [guia de instalação](docs/adb.md): pelo celular com Bugjaeger ou pelo PC com ADB. A instalação e a conexão física foram adiadas a pedido do usuário; não são necessárias para baixar e guardar a prévia. As notas distinguem uma versão compilada de uma versão testada fisicamente e informam o firmware quando houver validação.
 
@@ -66,6 +66,8 @@ O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. El
 - [Compatibilidade por modelo e recursos](docs/compatibility.md).
 - [ADB, instalação e coleta privada de diagnóstico](docs/adb.md).
 - [Roteiro de teste físico e medição de autonomia](docs/validation.md).
+- [Testes autônomos em emulador Wear OS](docs/emulator.md).
+- [Auditoria de execução e revisão visual da v0.2.1](docs/auditorias/2026-10-19-execucao.md).
 - [Resultados técnicos e limitações conhecidas](docs/results.md).
 - [Investigação futura de controles por ADB](docs/experiments.md).
 - [Assinatura e publicação](docs/releases.md).

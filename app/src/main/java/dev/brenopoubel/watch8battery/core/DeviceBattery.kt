@@ -1,9 +1,9 @@
 package dev.brenopoubel.watch8battery.core
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.BatteryManager
 import android.os.SystemClock
 import android.provider.Settings
@@ -34,9 +34,8 @@ object DeviceBattery {
 }
 
 /** Dados somente locais; não registra sensores nem agenda trabalho em segundo plano. */
-@SuppressLint("UseKtx") // commit() retorna a confirmação de gravação; a extensão KTX retorna Unit.
-class MeasurementStore(context: Context) {
-    private val preferences = context.getSharedPreferences("measurement", Context.MODE_PRIVATE)
+class MeasurementStore internal constructor(private val preferences: SharedPreferences) {
+    constructor(context: Context) : this(context.getSharedPreferences("measurement", Context.MODE_PRIVATE))
 
     fun active(): BatterySample? {
         if (!preferences.getBoolean("active", false)) return null
@@ -51,20 +50,21 @@ class MeasurementStore(context: Context) {
 
     fun start(sample: BatterySample): Boolean {
         if (active() != null || sample.charging || sample.percent !in 0..100) return false
-        return preferences.edit()
-            .putBoolean("active", true)
-            .putInt("percent", sample.percent)
-            .putLong("elapsed", sample.elapsedMillis)
-            .putLong("wall", sample.wallMillis)
-            .putInt("boot", sample.bootCount ?: -1)
-            .commit()
+        return preferences.commitPreservingMemory {
+            putBoolean("active", true)
+            putInt("percent", sample.percent)
+            putLong("elapsed", sample.elapsedMillis)
+            putLong("wall", sample.wallMillis)
+            putInt("boot", sample.bootCount ?: -1)
+        }
     }
 
-    fun complete(summary: String): Boolean = preferences.edit()
-        .remove("active").remove("percent").remove("elapsed").remove("wall").remove("boot")
-        .putString("last_result", summary).commit()
+    fun complete(summary: String): Boolean = preferences.commitPreservingMemory {
+        remove("active").remove("percent").remove("elapsed").remove("wall").remove("boot")
+        putString("last_result", summary)
+    }
 
     fun lastResult(): String? = preferences.getString("last_result", null)
 
-    fun clear(): Boolean = preferences.edit().clear().commit()
+    fun clear(): Boolean = preferences.commitPreservingMemory { clear() }
 }

@@ -14,7 +14,7 @@ Toda alteração de funcionalidade deve incluir revisão de acabamento na mesma 
 
 - [ ] **Telas pequenas:** conteúdo legível, sem cortes nas bordas circulares e com os botões finais alcançáveis no menor tamanho-alvo.
 - [ ] **Acessibilidade:** escala de fonte normal e ampliada, contraste, alvos de toque confortáveis e descrições úteis para elementos acionáveis sem texto.
-- [ ] **Voltar:** retorna de Destino avançado e Medição manual ao painel sem criar ciclos; saída coerente a partir do painel e dos atalhos.
+- [ ] **Voltar:** retorna de Validar atalho e Medição manual ao painel sem criar ciclos; saída coerente a partir do painel e dos atalhos.
 - [ ] **Rolagem:** conteúdo completo acessível, sem prender o gesto; testar toque e coroa/bezel onde disponível.
 - [ ] **Estados:** bateria e mensagens atualizadas ao voltar ao primeiro plano; ausência de destino, recurso indisponível e falhas recuperáveis com instruções claras.
 - [ ] **Ícones e nomes:** WatchReserve consistente no app, tile e complicação; ícones distintos e legíveis, sem depender só de cor para comunicar estado.

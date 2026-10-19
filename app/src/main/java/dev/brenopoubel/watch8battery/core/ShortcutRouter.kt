@@ -1,11 +1,11 @@
 package dev.brenopoubel.watch8battery.core
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
@@ -14,9 +14,8 @@ import android.widget.Toast
 
 data class CandidateInspection(val component: ComponentName?, val settingsVersion: Long?, val error: String?)
 
-@SuppressLint("UseKtx") // A confirmação síncrona de commit() é necessária para liberar o destino.
-class RouteStore(context: Context) {
-    private val preferences = context.getSharedPreferences("validated_destination", Context.MODE_PRIVATE)
+class RouteStore internal constructor(private val preferences: SharedPreferences) {
+    constructor(context: Context) : this(context.getSharedPreferences("validated_destination", Context.MODE_PRIVATE))
 
     fun read(): RouteProof? {
         val component = preferences.getString("component", null) ?: return null
@@ -29,15 +28,15 @@ class RouteStore(context: Context) {
         )
     }
 
-    fun save(proof: RouteProof): Boolean = preferences.edit()
-        .putString("component", proof.component)
-        .putString("fingerprint", proof.fingerprint)
-        .putLong("version", proof.settingsVersion)
-        .putBoolean("returned", proof.testReturned)
-        .putBoolean("confirmed", proof.visuallyConfirmed)
-        .commit()
+    fun save(proof: RouteProof): Boolean = preferences.commitPreservingMemory {
+        putString("component", proof.component)
+        putString("fingerprint", proof.fingerprint)
+        putLong("version", proof.settingsVersion)
+        putBoolean("returned", proof.testReturned)
+        putBoolean("confirmed", proof.visuallyConfirmed)
+    }
 
-    fun clear(): Boolean = preferences.edit().clear().commit()
+    fun clear(): Boolean = preferences.commitPreservingMemory { clear() }
 }
 
 object ShortcutRouter {
@@ -97,8 +96,9 @@ object ShortcutRouter {
         if (inspection.error != null || !route.isUsable(Build.FINGERPRINT, inspection.settingsVersion ?: -1)) {
             // Não transforma uma candidata ainda sem prova em um destino autorizado.
             if (route.visuallyConfirmed) {
-                store.clear()
-                return null to "Destino invalidado. Valide novamente após a atualização."
+                val cleared = store.clear()
+                return null to if (cleared) "Destino invalidado. Valide novamente após a atualização."
+                else "Destino incompatível. Falha ao remover a validação antiga; ela não será usada. Tente apagar o destino no painel."
             }
             return null to null
         }
@@ -107,20 +107,23 @@ object ShortcutRouter {
 
     fun openWatchOnly(activity: Activity): Boolean {
         val (destination, invalidation) = validatedDestination(activity)
+        var guidance = invalidation
         if (destination != null) {
             try {
                 activity.startActivity(Intent().setComponent(destination))
                 return true
             } catch (_: ActivityNotFoundException) {
-                RouteStore(activity).clear()
+                // Cai nas configurações públicas e informa eventual falha de limpeza.
             } catch (_: SecurityException) {
-                RouteStore(activity).clear()
+                // O acesso pode ser revogado entre a inspeção e a abertura.
             }
+            guidance = if (RouteStore(activity).clear()) "Destino indisponível. Procure Só relógio nas configurações de bateria."
+            else "Destino indisponível e falha ao apagar a validação. Tente remover o destino no painel."
         }
         return openSettings(
             activity,
             Settings.ACTION_BATTERY_SAVER_SETTINGS,
-            invalidation ?: "Só relógio ainda sem destino validado. Procure a opção nas configurações de bateria.",
+            guidance ?: "Só relógio ainda sem destino validado. Procure a opção nas configurações de bateria.",
         )
     }
 

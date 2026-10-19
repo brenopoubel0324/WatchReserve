@@ -13,8 +13,8 @@ android {
         applicationId = "dev.brenopoubel.watch8battery"
         minSdk = 30
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.2.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -53,4 +53,8 @@ dependencies {
     implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.2.1")
     implementation("com.google.guava:guava:33.3.1-android")
     testImplementation("junit:junit:4.13.2")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.08.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
 }

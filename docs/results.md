@@ -81,9 +81,28 @@ Após a última correção de mensagens, `assembleDebug`, os 17 testes JVM e `li
 
 Os checks históricos não são usados como evidência desta versão. Não há teste físico nem ganho de autonomia confirmado em nenhum alvo.
 
-**Verificação visual pendente:** a tentativa de renderização dos vetores no Chrome foi bloqueada pela política de execução do ambiente. Não houve observação da interface em emulador ou relógio. A interação do teclado com foco/rolagem rotativa, a fonte ampliada e os cortes em telas circulares pequenas permanecem no roteiro de teste; inspeção de código não comprova esses resultados.
+**Estado visual na entrega da v0.2.0:** a tentativa de renderização dos vetores no Chrome foi bloqueada pela política de execução do ambiente. Naquela entrega não houve observação da interface em emulador ou relógio. A v0.2.1 adiciona evidência em emulador abaixo, com seus limites próprios.
 
 Bug sweep final: diff, Git, mudanças recentes, recursos opcionais, componentes Android, assinatura, links, permissões e resultados revisados; sem achados bloqueantes ou altos remanescentes. As lacunas são a verificação visual, a validação física por modelo/firmware e a medição de autonomia. Nenhuma chave, senha ou coleta privada foi publicada.
+
+## Validação v0.2.1 — auditoria e emulador
+
+Autoauditoria em três rodadas pela skill `self-audit-loop`, solicitada pelo usuário antes da emulação. [Relatório completo](auditorias/2026-10-19-execucao.md): aprovado para esta prévia, sem achados bloqueantes ou altos remanescentes. Plano completo parcialmente implementado; não há prova Samsung nem controles avançados nesta versão.
+
+Corrigidos o estado de destino validado após falha de limpeza e a atualização do cache de preferências após erro de escrita. A revisão visual priorizou as ações principais e reduziu textos iniciais. Nomes de arquivos/chaves de preferências, application ID, componentes e certificado foram preservados.
+
+- **23 testes JVM aprovados**, seis novos cobrindo falhas de armazenamento.
+- **Seis testes instrumentados em cada fonte, 1,0 e 1,3**, com falhas reais de disco no Android, recriação/Back, mensagens repetidas e evento rotativo.
+- Imagem Wear OS 5/API 34, 384×384 px e 192 dp, forma circular confirmada pelo Android; nenhuma conexão física.
+- [Oito capturas finais e resultados](evidencias/2026-10-19-wearos5/README.md) inspecionados. Ações principais visíveis nas duas fontes; itens que passam pelas bordas ainda são parcialmente cortados durante a rolagem.
+- Builds debug/androidTest/release, R8, lint e actionlint aprovados. Lint: zero erros, doze avisos de atualização de dependências.
+- APK release v0.2.0 instalado e atualizado para v0.2.1 com `install -r` no AVD: atualização e painel aprovados. A entrada do atalho chegou às configurações gerais do Wear OS via código do app; não comprova atalho útil para “Só relógio”.
+- Assinatura/certificado, metadados, ausência de modo depurável, permissões e alinhamento de 16 KiB conferidos.
+- O roteiro do emulador recusa alvo divergente; fonte e tempo de tela restaurados. Não executa testes automaticamente em todos os dispositivos.
+
+Artefato preparado: `WatchReserve-0.2.1.apk`, versionCode `3`, 2.968.265 bytes, SHA-256 `55e615db70ced8236322db28b4f019d036730663408f280e8d3721b536ff6697`. Publicação e CI serão registradas após conclusão.
+
+Bug sweep: sem achados bloqueantes ou altos remanescentes; contratos e permissões preservados. Cobertura parcial de teclado/acessibilidade e lista circular registrada no relatório. Continuam pendentes as superfícies externas no firmware Samsung, o ciclo de vida completo, outros modelos/API e a autonomia física. Nenhum ganho de bateria declarado.
 
 ## Próxima evidência necessária
 

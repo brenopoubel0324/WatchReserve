@@ -57,6 +57,7 @@ class PanelActivity : ComponentActivity() {
         }
     private var componentText by mutableStateOf("")
     private var route by mutableStateOf<RouteProof?>(null)
+    private var destinationValidated by mutableStateOf(false)
     private var battery by mutableStateOf<BatterySample?>(null)
     private var measurementStart by mutableStateOf<BatterySample?>(null)
     private var lastMeasurement by mutableStateOf<String?>(null)
@@ -73,6 +74,7 @@ class PanelActivity : ComponentActivity() {
         ) {
             if (routeStore.save(stored.copy(testReturned = true, visuallyConfirmed = false))) {
                 route = routeStore.read()
+                destinationValidated = false
                 message = "O teste retornou. Confirme somente se viu a tela correta de Só relógio."
             } else message = "Falha ao registrar o teste. Tente novamente."
         } else message = "Teste invalidado. Salve e teste novamente o componente atual."
@@ -92,7 +94,7 @@ class PanelActivity : ComponentActivity() {
             WearScreen(
                 when (page) {
                     Page.HOME -> "Economia"
-                    Page.DESTINATION -> "Destino avançado"
+                    Page.DESTINATION -> "Validar atalho"
                     Page.MEASUREMENT -> "Medição manual"
                 },
                 notice = message,
@@ -102,8 +104,8 @@ class PanelActivity : ComponentActivity() {
                     Page.HOME -> {
                         val current = battery
                         Note(if (current != null && current.percent in 0..100) "Bateria: ${current.percent}%" else "Bateria indisponível")
-                        Note(if (route?.visuallyConfirmed == true) "Atalho validado neste firmware." else "Só relógio: destino direto ainda não validado.")
                         Action("Só relógio") { startActivity(Intent(this@PanelActivity, ShortcutActivity::class.java)) }
+                        Note(if (destinationValidated) "Atalho validado." else "Atalho não validado.")
                         Action("Economia do sistema") { openSettings(Settings.ACTION_BATTERY_SAVER_SETTINGS, "Abra Economia de energia nas configurações de bateria.") }
                         if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                             Action("Redes móveis (LTE)") { openSettings(Settings.ACTION_NETWORK_OPERATOR_SETTINGS, "Desligue o LTE quando não precisar dele. Procure Conexões → Redes móveis.") }
@@ -116,11 +118,10 @@ class PanelActivity : ComponentActivity() {
                         Action("Saúde") { openHealth() }
                         Action("Medir consumo") { page = Page.MEASUREMENT; message = "" }
                         Action("Configurar Só relógio") { page = Page.DESTINATION; message = "" }
-                        Note("Ajustes manuais, sem monitoramento contínuo. Você confirma as alterações nas telas do sistema.")
+                        Note("Você confirma os ajustes nas telas do sistema.")
                         Action("Atualizar bateria") { refresh() }
                     }
                     Page.DESTINATION -> {
-                        Note("Avançado: obtenha o componente da tela por ADB. Só atividades exportadas de Configurações ou Bateria do sistema são aceitas. Nenhum nome Samsung é presumido.")
                         Note("Componente (pacote/classe)")
                         BasicTextField(
                             value = componentText,
@@ -140,21 +141,22 @@ class PanelActivity : ComponentActivity() {
                             Note("Você viu a tela de Só relógio? Apenas abrir bateria ou ajustes gerais não comprova acesso direto. Preserve a confirmação nativa de ativação.")
                             Action("Confirmar tela correta", enabled = matchesSaved) { confirmCandidate() }
                         }
-                        if (route?.visuallyConfirmed == true) Note("Confirmada. A prova será invalidada se o firmware ou o pacote do destino mudar.")
+                        if (destinationValidated) Note("Confirmada. A prova será invalidada se o firmware ou o pacote do destino mudar.")
                         Action("Apagar destino") {
-                            if (routeStore.clear()) { route = null; componentText = ""; message = "Destino removido." }
+                            if (routeStore.clear()) { route = null; destinationValidated = false; componentText = ""; message = "Destino removido." }
                             else message = "Não foi possível remover o destino."
                         }
+                        Note("Obtenha o componente por ADB no seu relógio. Só telas exportadas de Configurações ou Bateria são aceitas. Preserve a confirmação nativa.")
                         Action("Voltar") { page = Page.HOME; message = "" }
                     }
                     Page.MEASUREMENT -> {
-                        Note("Leitura sob demanda, sem sensores ou serviço ativo. Faça janelas de 24 h, sem depuração e com uso semelhante. Anote as condições fora do app.")
                         measurementStart?.let {
-                            Note("Início: ${DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(it.wallMillis))}; bateria ${it.percent}%.")
                             Action("Finalizar medição") { finishMeasurement() }
+                            Note("Início: ${DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(it.wallMillis))}; bateria ${it.percent}%.")
                         } ?: Action("Iniciar medição") { startMeasurement() }
                         lastMeasurement?.let { Note(it) }
-                        Note("Uma recarga entre leituras pode não ser detectada. Descarte manualmente se carregou, reiniciou ou mudou condições de uso. Os resultados ficam apenas neste relógio.")
+                        Note("Inicie e finalize manualmente. Use janelas de 24 h, com rotina semelhante e depuração desligada.")
+                        Note("Descarte se houve recarga, reinício ou mudança de uso. Uma recarga entre leituras pode não ser detectada.")
                         Action("Apagar medições locais") {
                             if (measurementStore.clear()) { message = "Medições removidas."; refresh() }
                             else message = "Não foi possível remover as medições."
@@ -179,7 +181,8 @@ class PanelActivity : ComponentActivity() {
     }
 
     private fun refresh() {
-        val (_, invalidation) = ShortcutRouter.validatedDestination(this)
+        val (destination, invalidation) = ShortcutRouter.validatedDestination(this)
+        destinationValidated = destination != null
         if (invalidation != null) message = invalidation
         route = routeStore.read()
         val sample = DeviceBattery.read(this)
@@ -201,6 +204,7 @@ class PanelActivity : ComponentActivity() {
         val candidate = RouteProof(inspection.component!!.flattenToString(), Build.FINGERPRINT, inspection.settingsVersion!!)
         if (routeStore.save(candidate)) {
             route = candidate
+            destinationValidated = false
             componentText = candidate.component
             message = "Candidata salva. Teste a abertura pelo app antes de confirmar."
         } else message = "Falha ao salvar a candidata."
@@ -217,6 +221,7 @@ class PanelActivity : ComponentActivity() {
             message = "Falha ao preparar o teste."; return
         }
         route = routeStore.read()
+        destinationValidated = false
         pendingTest = stored.component
         try {
             testDestination.launch(Intent().setComponent(inspection.component))
@@ -237,6 +242,7 @@ class PanelActivity : ComponentActivity() {
         }
         if (routeStore.save(stored.copy(visuallyConfirmed = true))) {
             route = routeStore.read()
+            destinationValidated = true
             message = "Destino confirmado apenas para este firmware. Compare o número de ações com o caminho nativo."
         } else message = "Falha ao salvar a confirmação."
     }

@@ -1,0 +1,17 @@
+{
+  "avd": "WatchReserve_Wear5_Small_Round",
+  "configuration": "config: mcc310-mnc260-en-rUS-ldltr-sw192dp-w192dp-h192dp-small-notlong-round-nowidecg-lowdr-port-watch-notnight-xhdpi-finger-keysexposed-qwerty-navhidden-nonav-384x384-v34\r\nabi: x86_64,arm64-v8a",
+  "debugApkSha256": "1cb8958a7842d1836fba8f7dec0ba546d1f5455827bae7ed9fa1980dbc6e64c7",
+  "runs": [
+    {
+      "fontScale": "1.0",
+      "passedTests": 6
+    },
+    {
+      "fontScale": "1.3",
+      "passedTests": 6
+    }
+  ],
+  "samsungValidated": false,
+  "autonomyMeasured": false
+}

@@ -78,9 +78,22 @@ O estudo não identificou integração com “Só relógio”, tile, complicaç�
 
 ## Progresso em 19/10/2026
 
+### Revisão de execução e emulação solicitadas pelo usuário
+
+Aplicar a skill `self-audit-loop` antes da execução em emulador. Escopo: implementação no commit `5361393`, requisitos aprovados e alterações de código da v0.1.0 para a v0.2.0; o diff vazio contra `origin/main` não substitui a revisão dos arquivos e contratos atuais.
+
+1. Registrar achados por severidade antes de editar, revisar simplificações e comparar entregas com o plano.
+2. Corrigir achados bloqueantes/altos e médios triviais; executar testes focados, build, lint e nova rodada de revisão, no máximo três rodadas.
+3. Preparar um emulador Wear OS, testar a interface e os fluxos possíveis e guardar evidências públicas revisadas no GitHub. Não alterar BIOS, recursos de virtualização ou reiniciar o PC para essa preparação; investigar alternativa se a aceleração não estiver disponível.
+4. Distinguir sempre revisão de código, execução em emulador e validação Samsung física. O emulador não comprova “Só relógio” nem autonomia real.
+
+Achados e resultados registrados na [auditoria de execução](../auditorias/2026-10-19-execucao.md). Autoauditoria encerrada em três rodadas: aprovado para prévia v0.2.1, sem achados bloqueantes ou altos remanescentes. O plano completo permanece parcialmente implementado.
+
+Correções: cache anterior preservado após falha de persistência, estado visual baseado na validação atual e ações principais priorizadas nas telas pequenas. Validação: 23 testes JVM, seis instrumentados em cada fonte (1,0 e 1,3), build debug/release, lint sem erros, assinatura/alinhamento, atualização real v0.2.0 → v0.2.1 no AVD e abertura do fallback geral. [Capturas revisadas](../evidencias/2026-10-19-wearos5/README.md) registram execução em tela circular; não comprovam Samsung ou ganho de autonomia. O roteiro de emulação restaura fonte e tempo de tela e recusa outro AVD.
+
 **Histórico da v0.1.0:** código, wrapper, CI, documentação, diagnóstico e APK assinado foram publicados, com validação física adiada. Builds debug/release, 17 testes JVM, lint e download público passaram localmente. A assinatura foi validada com os arquivos do backup privado. A CI aguardava runners naquela entrega; depois falhou por ausência do SDK, corrigida na v0.2.0 abaixo.
 
-**v0.2.0 publicada:** ampliação para Galaxy Watch Wear OS, nome WatchReserve, adaptação de recursos e revisão funcional com acabamento em três rodadas de inspeção de código. Builds debug/release, 17 testes JVM, lint sem erros, actionlint, diagnóstico em PowerShell 7.6/5.1, assinatura, alinhamento e download público passaram. A [CI desta versão](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39311475179) foi aprovada nos dois jobs. O APK mantém a identidade da primeira release. Os testes visuais em emulador/relógio continuam pendentes; a tentativa de renderizar os vetores no Chrome foi bloqueada pela política de execução. Consulte os [resultados](../results.md), a [matriz de compatibilidade](../compatibility.md) e o [roteiro de revisão](../validation.md).
+**v0.2.0 publicada — histórico:** ampliação para Galaxy Watch Wear OS, nome WatchReserve, adaptação de recursos e revisão funcional com acabamento em três rodadas de inspeção de código. Builds debug/release, 17 testes JVM, lint sem erros, actionlint, diagnóstico em PowerShell 7.6/5.1, assinatura, alinhamento e download público passaram. A [CI desta versão](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39311475179) foi aprovada nos dois jobs. O APK mantém a identidade da primeira release. Naquela entrega os testes visuais estavam pendentes e a tentativa de renderizar vetores no Chrome foi bloqueada; a v0.2.1 adiciona a emulação descrita acima. Consulte os [resultados](../results.md), a [matriz de compatibilidade](../compatibility.md) e o [roteiro de revisão](../validation.md).
 
 O usuário adiou a conexão física e poderá instalar depois, pelo celular com Bugjaeger ou pelo PC com ADB. Esta entrega pode publicar uma prévia sem depender do relógio; nenhum novo pareamento é exigido agora. Continuam pendentes a identificação do firmware, a abertura da confirmação Samsung pelo APK, a seleção em Home, os testes em mostrador e as medições de autonomia. Nenhum resultado de economia está confirmado.
 
