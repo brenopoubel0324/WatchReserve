@@ -7,6 +7,7 @@ param(
     [string]$BuildToolsVersion = '36.0.0'
 )
 
+# Os nomes privados e o alias da primeira release preservam a identidade de atualização.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $watchProjectRoot = Split-Path -Parent $PSScriptRoot
@@ -147,7 +148,7 @@ try {
     $watchOutput = Join-Path $watchProjectRoot 'app\build\outputs\apk\release'
     $watchUnsigned = Join-Path $watchOutput 'app-release-unsigned.apk'
     $watchAligned = Join-Path $watchOutput 'app-release-aligned.apk'
-    $watchSigned = Join-Path $watchOutput "Watch8-Battery-$($watchVersionMatch.Groups[1].Value).apk"
+    $watchSigned = Join-Path $watchOutput "WatchReserve-$($watchVersionMatch.Groups[1].Value).apk"
     & (Join-Path $watchBuildTools 'zipalign.exe') -P 16 -f 4 $watchUnsigned $watchAligned
     if ($LASTEXITCODE -ne 0) { throw 'O alinhamento do APK falhou.' }
     & (Join-Path $watchBuildTools 'apksigner.bat') sign --ks $watchKeystore `

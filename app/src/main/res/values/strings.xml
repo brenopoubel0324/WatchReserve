@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Watch8 Battery</string>
+    <string name="app_name">WatchReserve</string>
     <string name="shortcut_name">Só relógio</string>
     <string name="tile_name">Economia</string>
     <string name="tile_description">Atalho para Só relógio e ajustes de economia de bateria.</string>

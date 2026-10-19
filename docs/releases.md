@@ -1,6 +1,14 @@
 # Assinatura e publicação
 
-As releases são publicadas no repositório público [Watch8-Battery](https://github.com/brenopoubel0324/Watch8-Battery/releases), associadas a uma tag. O código, o Gradle Wrapper e a CI ficam versionados; as chaves permanecem privadas.
+As releases são publicadas no repositório público [WatchReserve](https://github.com/brenopoubel0324/WatchReserve/releases), associadas a uma tag. O código, o Gradle Wrapper e a CI ficam versionados; as chaves permanecem privadas.
+
+## Migração de nome na v0.2.0
+
+O projeto passa de Watch8-Battery para **WatchReserve**, com pasta local `C:\Users\breno\code\GitHub\WatchReserve`, repositório `brenopoubel0324/WatchReserve` e APK `WatchReserve-0.2.0.apk`. O foco passa a abranger Galaxy Watch com Wear OS/API 30 ou superior; veja a [matriz de compatibilidade](compatibility.md).
+
+Application ID `dev.brenopoubel.watch8battery`, nomes dos componentes Android, alias e certificado de assinatura permanecem iguais intencionalmente. Não renomeie a chave para gerar uma nova identidade: preservar a assinatura permite atualizar a instalação anterior com `install -r`. As pastas privadas de assinatura e backup também preservam os nomes legados descritos abaixo.
+
+O histórico da v0.1.0 permanece intacto, incluindo tag, commit, bytes, hash e nome `Watch8-Battery-0.1.0.apk`; somente os links passam a usar a URL canônica do repositório renomeado. Novas coletas de diagnóstico vão para `%LOCALAPPDATA%\WatchReserveDiagnostics` com prefixo `watchreserve-`. Relatórios privados antigos não são migrados automaticamente.
 
 ## Chave persistente
 
@@ -30,9 +38,9 @@ O workflow de verificação deve usar permissões de leitura. Uma release pode s
 
 ## Notas mínimas de cada versão
 
-Informe versão/tag, commit, verificações executadas, SHA-256 do APK, estado de teste físico e limitações conhecidas. Antes da conexão com o Watch8, use claramente:
+Informe versão/tag, commit, verificações executadas, SHA-256 do APK, revisão funcional e de acabamento, estado de teste físico e limitações conhecidas. Antes de testes físicos, use claramente:
 
-> Prévia técnica. Compilada e verificada localmente; não testada no Galaxy Watch8 físico. Acesso direto ao modo Samsung “Só relógio” e ganho de autonomia ainda não comprovados.
+> Prévia técnica. Nenhum modelo Galaxy Watch foi validado fisicamente. Acesso direto ao modo Samsung “Só relógio” e ganho de autonomia ainda não comprovados.
 
 Quando houver teste físico, informe modelo e versões técnicas revisadas, sem serial nem fingerprint. Diferencie abertura de configurações, abertura da confirmação e redução real de ações.
 

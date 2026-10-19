@@ -6,9 +6,9 @@ A instalação e os testes físicos foram adiados a pedido do usuário. Os passo
 
 ## Opção A: instalar pelo celular com Bugjaeger
 
-Baixe o APK de [Releases](https://github.com/brenopoubel0324/Watch8-Battery/releases) no celular e deixe celular e relógio na mesma rede Wi-Fi. No relógio, habilite as opções do desenvolvedor e a depuração sem fio. No Bugjaeger, use o pareamento com o código, IP e porta mostrados pelo relógio; depois conecte à porta da tela principal de depuração, que pode ser diferente da porta de pareamento.
+Baixe o APK de [Releases](https://github.com/brenopoubel0324/WatchReserve/releases) no celular e deixe celular e relógio na mesma rede Wi-Fi. No relógio, habilite as opções do desenvolvedor e a depuração sem fio. No Bugjaeger, use o pareamento com o código, IP e porta mostrados pelo relógio; depois conecte à porta da tela principal de depuração, que pode ser diferente da porta de pareamento.
 
-Com o relógio escolhido no Bugjaeger, abra a aba de pacotes e use a ação de instalar APK para selecionar o arquivo baixado. Os nomes e posições podem variar conforme a versão do app. Confirme o sucesso e procure “Só relógio” no launcher do relógio; o nome do app é Watch8 Battery. Este fluxo é baseado na documentação do desenvolvedor do Bugjaeger; ainda não foi validado neste Watch8. [Pareamento de relógio](https://sisik.eu/blog/android/bugjaeger/connect-watch), [instalação de APK](https://sisik.eu/blog/android/bugjaeger/sideload-apk-files)
+Com o relógio escolhido no Bugjaeger, abra a aba de pacotes e use a ação de instalar APK para selecionar o arquivo baixado. Os nomes e posições podem variar conforme a versão do app. Confirme o sucesso e procure “Só relógio” no launcher do relógio; o nome do app é WatchReserve. Este fluxo é baseado na documentação do desenvolvedor do Bugjaeger; ainda não foi validado fisicamente nos modelos-alvo. [Pareamento de relógio](https://sisik.eu/blog/android/bugjaeger/connect-watch), [instalação de APK](https://sisik.eu/blog/android/bugjaeger/sideload-apk-files)
 
 Ao terminar, desconecte o Bugjaeger e desligue a depuração sem fio no relógio. Não são necessários comandos para conceder permissões ou modificar configurações globais. A coleta por PowerShell abaixo é uma alternativa para investigação futura pelo PC.
 
@@ -35,9 +35,9 @@ $watchSerial = 'IDENTIFICADOR_LOCAL_DO_RELOGIO'
 adb -s $watchSerial install -r '.\app\build\outputs\apk\debug\app-debug.apk'
 ```
 
-Para uma release, use o caminho do APK baixado em Releases. Atualizações com `install -r` exigem assinatura compatível; debug e release podem ter chaves diferentes. Não desinstale apenas para contornar um erro sem considerar a perda dos dados locais. [Referência oficial de instalação por ADB](https://developer.android.com/tools/adb#move)
+Para uma release, use o caminho do APK baixado em Releases, como `WatchReserve-0.2.0.apk`. O nome novo preserva application ID e assinatura para atualizar a v0.1.0. Atualizações com `install -r` exigem assinatura compatível; debug e release podem ter chaves diferentes. Não desinstale apenas para contornar um erro sem considerar a perda dos dados locais. [Referência oficial de instalação por ADB](https://developer.android.com/tools/adb#move)
 
-Abra “Só relógio” no launcher do relógio. O seletor Samsung pode identificá-lo como Watch8 Battery. Depois configure Home, tile e complicação conforme o README. A prévia pode abrir as configurações de economia ou as configurações gerais; ela não confirma que a tela Samsung de “Só relógio” aceita abertura direta.
+Abra “Só relógio” no launcher do relógio. O seletor Samsung pode identificá-lo como WatchReserve. Depois configure Home, tile e complicação conforme o README. A prévia pode abrir as configurações de economia ou as configurações gerais; ela não confirma que a tela Samsung de “Só relógio” aceita abertura direta.
 
 ## Coleta privada e somente leitura
 
@@ -55,7 +55,7 @@ Se houver um único aparelho conectado, `-Serial` pode ser omitido. Com mais de 
     -Serial $watchSerial
 ```
 
-O resultado fica em `%LOCALAPPDATA%\Watch8BatteryDiagnostics\`, fora do Git. O diretório é restrito ao usuário atual e ao SYSTEM; a coleta aborta se essa proteção não puder ser aplicada. O console informa somente o caminho, nunca o relatório bruto.
+O resultado fica em `%LOCALAPPDATA%\WatchReserveDiagnostics\`, em arquivos com prefixo `watchreserve-`, fora do Git. O diretório é restrito ao usuário atual e ao SYSTEM; a coleta aborta se essa proteção não puder ser aplicada. O console informa somente o caminho, nunca o relatório bruto. Relatórios da v0.1.0 permanecem no diretório antigo `Watch8BatteryDiagnostics`; não são movidos nem publicados automaticamente.
 
 O padrão não inclui serial, fingerprint nem dumps de atividades. Os dados completos de firmware exigem escolha explícita:
 

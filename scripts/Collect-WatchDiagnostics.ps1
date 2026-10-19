@@ -1,10 +1,10 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-Coleta consultas ADB de somente leitura para investigação local do Watch8.
+Coleta consultas ADB de somente leitura para investigação local de Galaxy Watch com Wear OS.
 .DESCRIPTION
 Não instala, não abre telas e não altera configurações do relógio. Grava somente
-em LOCALAPPDATA\Watch8BatteryDiagnostics com acesso do usuário atual e SYSTEM.
+em LOCALAPPDATA\WatchReserveDiagnostics com acesso do usuário atual e SYSTEM.
 Serial, fingerprint e dumps de atividades exigem opções explícitas. Nunca envie
 o relatório bruto ao repositório público.
 #>
@@ -70,7 +70,7 @@ if ($Serial) {
     throw 'Há vários aparelhos conectados. Confira adb devices localmente e execute com -Serial explícito.'
 }
 
-$diagnosticsRoot = Join-Path $env:LOCALAPPDATA 'Watch8BatteryDiagnostics'
+$diagnosticsRoot = Join-Path $env:LOCALAPPDATA 'WatchReserveDiagnostics'
 if (Test-Path -LiteralPath $diagnosticsRoot) {
     $existingItem = Get-Item -LiteralPath $diagnosticsRoot -Force
     if (-not $existingItem.PSIsContainer -or ($existingItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
@@ -106,7 +106,7 @@ try {
 }
 
 $report = New-Object 'System.Collections.Generic.List[string]'
-$report.Add('Watch8-Battery — diagnóstico privado; não publicar o conteúdo bruto.')
+$report.Add('WatchReserve — diagnóstico privado; não publicar o conteúdo bruto.')
 $report.Add('Coleta UTC: ' + [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))
 $report.Add('Consultas somente leitura; nenhum ajuste do relógio foi alterado.')
 
@@ -139,7 +139,7 @@ if ($CaptureActivities) {
     $report.Add($activityDump)
 }
 
-$fileName = 'watch8-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0, 8) + '.txt'
+$fileName = 'watchreserve-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0, 8) + '.txt'
 $reportPath = Join-Path $diagnosticsRoot $fileName
 [IO.File]::WriteAllText($reportPath, ($report -join [Environment]::NewLine), (New-Object Text.UTF8Encoding($false)))
 Write-Output ('Diagnóstico privado salvo em: ' + $reportPath)

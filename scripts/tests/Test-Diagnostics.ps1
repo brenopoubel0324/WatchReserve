@@ -79,7 +79,7 @@ $global:LASTEXITCODE = 1
     foreach ($privateMode in @($false, $true, $true)) {
         $result = @(& $diagnosticsScript -AdbPath $fakeAdb -IncludePrivateDetails:$privateMode -CaptureActivities:$privateMode)
         $reportPath = $result[0].Substring('Diagnóstico privado salvo em: '.Length)
-        $expectedDirectory = Join-Path $expectedLocalAppData 'Watch8BatteryDiagnostics'
+        $expectedDirectory = Join-Path $expectedLocalAppData 'WatchReserveDiagnostics'
         if ((Split-Path $reportPath -Parent) -ne $expectedDirectory) {
             throw 'O relatório saiu do diretório temporário privado.'
         }

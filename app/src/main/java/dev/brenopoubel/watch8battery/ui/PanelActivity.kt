@@ -2,19 +2,23 @@ package dev.brenopoubel.watch8battery.ui
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -43,7 +47,14 @@ class PanelActivity : ComponentActivity() {
     private lateinit var routeStore: RouteStore
     private lateinit var measurementStore: MeasurementStore
     private var page by mutableStateOf(Page.HOME)
-    private var message by mutableStateOf("")
+    private var messageText by mutableStateOf("")
+    private var messageEvent by mutableLongStateOf(0L)
+    private var message: String
+        get() = messageText
+        set(value) {
+            messageText = value
+            messageEvent += 1
+        }
     private var componentText by mutableStateOf("")
     private var route by mutableStateOf<RouteProof?>(null)
     private var battery by mutableStateOf<BatterySample?>(null)
@@ -77,14 +88,16 @@ class PanelActivity : ComponentActivity() {
         route = routeStore.read()
         componentText = savedInstanceState?.getString("component") ?: route?.component.orEmpty()
         setContent {
+            BackHandler(enabled = page != Page.HOME) { page = Page.HOME; message = "" }
             WearScreen(
                 when (page) {
                     Page.HOME -> "Economia"
                     Page.DESTINATION -> "Destino avançado"
                     Page.MEASUREMENT -> "Medição manual"
                 },
+                notice = message,
+                noticeEvent = messageEvent,
             ) {
-                if (message.isNotBlank()) Note(message)
                 when (page) {
                     Page.HOME -> {
                         val current = battery
@@ -92,7 +105,9 @@ class PanelActivity : ComponentActivity() {
                         Note(if (route?.visuallyConfirmed == true) "Atalho validado neste firmware." else "Só relógio: destino direto ainda não validado.")
                         Action("Só relógio") { startActivity(Intent(this@PanelActivity, ShortcutActivity::class.java)) }
                         Action("Economia do sistema") { openSettings(Settings.ACTION_BATTERY_SAVER_SETTINGS, "Abra Economia de energia nas configurações de bateria.") }
-                        Action("Redes móveis (LTE)") { openSettings(Settings.ACTION_NETWORK_OPERATOR_SETTINGS, "Para máxima autonomia, desligue o LTE quando não precisar dele. Procure Conexões → Redes móveis.") }
+                        if (packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+                            Action("Redes móveis (LTE)") { openSettings(Settings.ACTION_NETWORK_OPERATOR_SETTINGS, "Desligue o LTE quando não precisar dele. Procure Conexões → Redes móveis.") }
+                        }
                         Action("Conexões") { openSettings(Settings.ACTION_WIRELESS_SETTINGS, "Revise as conexões ativas de acordo com o uso.") }
                         Action("Tela e brilho") { openSettings(Settings.ACTION_DISPLAY_SETTINGS, "Ajuste brilho, AOD, gestos e tempo de tela nas configurações de exibição.") }
                         Action("Localização") { openSettings(Settings.ACTION_LOCATION_SOURCE_SETTINGS, "Confira se você precisa da localização durante este período.") }
@@ -100,8 +115,8 @@ class PanelActivity : ComponentActivity() {
                         Action("Wi-Fi") { openSettings(Settings.ACTION_WIFI_SETTINGS, "Desligue o Wi-Fi quando não precisar da conexão.") }
                         Action("Saúde") { openHealth() }
                         Action("Medir consumo") { page = Page.MEASUREMENT; message = "" }
-                        Action("Validar destino Samsung") { page = Page.DESTINATION; message = "" }
-                        Note("Sem monitoramento contínuo. O app não altera configurações do sistema. Controles diretos por ADB aguardam validação física.")
+                        Action("Configurar Só relógio") { page = Page.DESTINATION; message = "" }
+                        Note("Ajustes manuais, sem monitoramento contínuo. Você confirma as alterações nas telas do sistema.")
                         Action("Atualizar bateria") { refresh() }
                     }
                     Page.DESTINATION -> {
@@ -110,7 +125,8 @@ class PanelActivity : ComponentActivity() {
                         BasicTextField(
                             value = componentText,
                             onValueChange = { componentText = it.take(500) },
-                            modifier = Modifier.fillMaxWidth().border(1.dp, Color.Gray, RoundedCornerShape(10.dp)).padding(10.dp)
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                .border(1.dp, Color.Gray, RoundedCornerShape(10.dp)).padding(10.dp)
                                 .semantics { contentDescription = "Componente da tela de Só relógio" },
                             textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
@@ -230,11 +246,11 @@ class PanelActivity : ComponentActivity() {
     }
 
     private fun openHealth() {
-        val intent = packageManager.getLaunchIntentForPackage("com.samsung.android.wear.shealth")
-        if (intent != null) {
+        for (healthPackage in listOf("com.samsung.android.wear.shealth", "com.sec.android.app.shealth")) {
+            val intent = packageManager.getLaunchIntentForPackage(healthPackage) ?: continue
             try { startActivity(intent); return }
-            catch (_: ActivityNotFoundException) { message = "Samsung Health indisponível." }
-            catch (_: SecurityException) { message = "Samsung Health bloqueado pelo sistema." }
+            catch (_: ActivityNotFoundException) { /* Tenta o próximo pacote Samsung declarado. */ }
+            catch (_: SecurityException) { /* Mantém a alternativa pública se o firmware bloquear. */ }
         }
         openSettings(Settings.ACTION_SETTINGS, "Abra Samsung Health e revise monitoramento de saúde e frequência de medições.")
     }

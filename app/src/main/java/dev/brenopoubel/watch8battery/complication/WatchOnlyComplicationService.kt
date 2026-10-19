@@ -32,7 +32,7 @@ class WatchOnlyComplicationService : ComplicationDataSourceService() {
         data(type, preview = true)
 
     private fun data(type: ComplicationType, preview: Boolean): ComplicationData? {
-        val icon = Icon.createWithResource(this, R.drawable.ic_watch)
+        val icon = Icon.createWithResource(this, R.drawable.ic_watch_small)
         val description = PlainComplicationText.Builder("Abrir o atalho Só relógio").build()
         // A prévia permanece constante e não cria uma ação executável.
         val tapAction = if (preview) null else PendingIntent.getActivity(

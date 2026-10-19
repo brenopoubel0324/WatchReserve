@@ -6,7 +6,8 @@
 
 | Item | Resultado |
 |---|---|
-| Dispositivo-alvo informado | Galaxy Watch8 LTE de 40 mm; versão exata do firmware ainda não registrada. |
+| Alvos do projeto | Linha Galaxy Watch Wear OS/API 30+, da família Watch4 em diante, incluindo variantes Classic, Pro, FE e Ultra com essa plataforma. Nenhum modelo validado fisicamente. |
+| Primeira referência informada | Galaxy Watch8 LTE de 40 mm; versão exata do firmware ainda não registrada. |
 | Autonomia informada | Três dias e algumas horas, com Bluetooth desligado e economia ativa; sem protocolo controlado. |
 | Conexão ADB com Watch8 nesta sessão | Adiada pelo usuário; não necessária para publicar a prévia. |
 | Destino Samsung de “Só relógio” acessível pelo APK | Não comprovado. Não foi presumido um componente privado. |
@@ -16,7 +17,7 @@
 | Economia adicional | Não medida; nenhum ganho declarado. |
 | Controles globais / `WRITE_SECURE_SETTINGS` | Não habilitados nesta prévia. |
 
-## Verificações do diagnóstico local
+## Verificações históricas do diagnóstico local
 
 O script `Collect-WatchDiagnostics.ps1` passou por análise sintática e execução com ADB simulado no PowerShell 7.6 e Windows PowerShell 5.1. Foram verificados: nenhum aparelho, múltiplos aparelhos exigindo seleção, seleção desconectada, ausência de identificadores e dumps por padrão, opt-in para dados privados, repetição da coleta com ACL restrita e uso exclusivo de consultas de leitura. Esses testes não acessaram um relógio real.
 
@@ -32,7 +33,7 @@ Links locais da documentação foram verificados. Os resultados de build, lint, 
 - **Atalho útil:** houve redução de ações até a confirmação, comparando o mesmo estado inicial com o melhor caminho nativo.
 - **Economia medida:** comparações repetidas e equivalentes sustentam uma diferença além da variação observada.
 
-## Verificações locais desta prévia
+## Verificações locais da v0.1.0 — histórico
 
 - APK de desenvolvimento compilado com `assembleDebug`.
 - 17 testes JVM passaram: prova de destino, seleção de provedores do sistema e integridade das medições.
@@ -45,18 +46,32 @@ Links locais da documentação foram verificados. Os resultados de build, lint, 
 - Diagnóstico simulado passou em PowerShell 7.6 e Windows PowerShell 5.1, incluindo privacidade, seleção de aparelho e reaplicação de ACL.
 - Revisão independente do código e dos scripts sem achados bloqueantes ou altos após as correções.
 
-O [workflow Android](https://github.com/brenopoubel0324/Watch8-Battery/actions/workflows/android.yml) verifica o app no Linux e o diagnóstico nas duas versões de PowerShell no Windows. Seu histórico público registra o resultado de cada execução.
+O [workflow Android](https://github.com/brenopoubel0324/WatchReserve/actions/workflows/android.yml) verifica o app no Linux e o diagnóstico nas duas versões de PowerShell no Windows. Seu histórico público registra o resultado de cada execução.
 
 ## Publicação v0.1.0
 
-- [Prévia publicada](https://github.com/brenopoubel0324/Watch8-Battery/releases/tag/v0.1.0), marcada como prerelease.
+- [Prévia publicada](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.1.0), marcada como prerelease.
 - Commit de código e tag: `c66d8b747f5b2ebdd3971b147fa790e7a5ba54e4`.
 - APK: `Watch8-Battery-0.1.0.apk`, 2.968.209 bytes.
 - SHA-256: `8f8777f4282dd63d06164f924346808cd55431676b1ae1eb58129dce5a1617dc`.
 - Download dos assets do GitHub conferido: hash e assinatura válidos.
-- [Primeira execução de CI](https://github.com/brenopoubel0324/Watch8-Battery/actions/runs/39279051822): aguardando runners na última consulta desta entrega. Isso não equivale a aprovação remota; os resultados locais acima foram executados de fato.
+- [Primeira execução de CI](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39279051822): diagnóstico Windows aprovado; build Android interrompido antes da compilação porque `sdkmanager` não estava disponível no runner. A v0.2.0 passa a preparar explicitamente o SDK com uma ação fixada por SHA. Os resultados locais acima foram executados de fato.
 
-Bug sweep e análise de lacunas: sem achados bloqueantes ou altos no código entregue; nenhuma chave, senha ou diagnóstico bruto versionado. Permanecem a execução remota da CI e as validações físicas explicitadas nesta página.
+Na entrega da v0.1.0, o bug sweep local não encontrou achados bloqueantes ou altos e a CI ainda aguardava execução. A falha posterior de preparação do SDK está registrada acima e foi incorporada à revisão da v0.2.0. Nenhuma chave, senha ou diagnóstico bruto foi versionado.
+
+## Evolução v0.2.0 — em preparação
+
+Nome público WatchReserve e foco ampliado para a linha Galaxy Watch com Wear OS. A documentação descreve a [matriz de alvos](compatibility.md), seleção por recursos e [revisão funcional com acabamento](validation.md). A prova Samsung continua específica ao firmware e à versão do pacote candidato.
+
+Application ID, componentes e identidade de assinatura da v0.1.0 permanecem iguais. Os artefatos históricos acima conservam seus nomes, commit e hash; a próxima release usará `WatchReserve-0.2.0.apk`.
+
+Nesta etapa foram implementados LTE condicionado a `FEATURE_TELEPHONY`, procura dos dois pacotes Samsung Health declarados, retorno das páginas internas, estado de rolagem por página, mensagens novas no topo com anúncio acessível, campo de toque mínimo de 48 dp e tratamento de rolagem por coroa/bezel. Tile e ícones foram alinhados ao nome; a prévia vetorial do tile é uma ilustração aproximada, não uma captura de execução.
+
+O diagnóstico simulado passou no PowerShell 7.6 e no Windows PowerShell 5.1 após a troca para o diretório WatchReserveDiagnostics; o BOM UTF-8 foi preservado nos scripts. A revisão funcional e de acabamento teve três rodadas de inspeção de código. Foram corrigidos os achados de navegação, recursos opcionais, rolagem, repetição de avisos e ícones; não restaram achados bloqueantes, altos ou médios nos diffs de UI. O workflow passou no `actionlint`.
+
+Após a última correção de mensagens, `assembleDebug`, os 17 testes JVM e `lintDebug` passaram no caminho local final WatchReserve. O lint manteve zero erros e dez avisos de atualização de dependências. A assinatura e a publicação do APK de release ainda estão em preparação. Os checks históricos não são usados como evidência desta versão. Não há teste físico nem ganho de autonomia confirmado em nenhum alvo.
+
+**Verificação visual pendente:** a tentativa de renderização dos vetores no Chrome foi bloqueada pela política de execução do ambiente. Não houve observação da interface em emulador ou relógio. A interação do teclado com foco/rolagem rotativa, a fonte ampliada e os cortes em telas circulares pequenas permanecem no roteiro de teste; inspeção de código não comprova esses resultados.
 
 ## Próxima evidência necessária
 

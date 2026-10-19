@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Watch8-Battery"
+rootProject.name = "WatchReserve"
 include(":app")

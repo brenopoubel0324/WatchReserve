@@ -52,7 +52,7 @@
         <service
             android:name=".tile.BatteryTileService"
             android:exported="true"
-            android:icon="@drawable/ic_watch"
+            android:icon="@drawable/ic_watch_monochrome"
             android:label="@string/tile_name"
             android:description="@string/tile_description"
             android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
@@ -65,7 +65,7 @@
             android:name=".complication.WatchOnlyComplicationService"
             android:exported="true"
             android:label="@string/shortcut_name"
-            android:icon="@drawable/ic_watch"
+            android:icon="@drawable/ic_watch_monochrome"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
                 <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />

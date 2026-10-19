@@ -17,6 +17,7 @@ import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.TileService
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import dev.brenopoubel.watch8battery.R
 import dev.brenopoubel.watch8battery.ui.PanelActivity
 import dev.brenopoubel.watch8battery.ui.ShortcutActivity
 
@@ -29,7 +30,7 @@ class BatteryTileService : TileService() {
             .setWidth(dp(requestParams.deviceConfiguration.screenWidthDp - 48f))
             .setHeight(wrap())
             .setHorizontalAlignment(HORIZONTAL_ALIGN_CENTER)
-            .addContent(label("Watch8 Battery", 14f, 0xFFCDD6E1.toInt()))
+            .addContent(label(getString(R.string.app_name), 14f, 0xFFCDD6E1.toInt()))
             .addContent(spacer(10f))
             .addContent(button("Só relógio", "watch_only", ShortcutActivity::class.java.name))
             .addContent(spacer(8f))

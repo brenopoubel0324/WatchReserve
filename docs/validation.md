@@ -1,12 +1,27 @@
 # Validação física e autonomia
 
-Este roteiro deve ser executado no Galaxy Watch8 LTE de 40 mm antes de declarar o atalho validado ou afirmar ganho de autonomia. A compilação e os testes locais cobrem lógica e contratos Android; não provam o comportamento do firmware Samsung.
+Este roteiro deve ser executado em cada combinação de modelo e firmware antes de declarar o atalho validado ou afirmar ganho de autonomia. O Galaxy Watch8 LTE de 40 mm continua a primeira referência, com teste físico adiado. A compilação e os testes locais cobrem lógica e contratos Android; não provam o comportamento do firmware Samsung. Veja os [alvos de compatibilidade](compatibility.md).
 
 ## Registrar o contexto
 
 Guarde localmente data, versão do APK, versão do Android/Wear OS/One UI Watch, firmware, versão do pacote da activity candidata e mostrador. O pacote da tela de bateria pode diferir do pacote de configurações gerais; registre ambos quando necessário. Use o script de diagnóstico para a parte privada. No resumo público, registre somente versões técnicas revisadas, sem serial, IP, fingerprint ou dumps.
 
 Antes de cada comparação, registre Bluetooth, Wi-Fi, LTE, economia de energia, AOD, gesto para acender, brilho, tempo de tela, medições de saúde, treino e sincronizações. A referência inicial do usuário mantém Bluetooth desligado e economia ativa; desligar novamente essas opções não pode ser contado como ganho adicional.
+
+## Revisão funcional e de acabamento
+
+Toda alteração de funcionalidade deve incluir revisão de acabamento na mesma entrega. Marque separadamente **inspecionado no código**, **observado em emulador** e **validado fisicamente**, com versão, modelo/tamanho e firmware. Um resultado de lint não substitui observação visual. A lista abaixo é um roteiro; não declara testes já executados na v0.2.0.
+
+- [ ] **Telas pequenas:** conteúdo legível, sem cortes nas bordas circulares e com os botões finais alcançáveis no menor tamanho-alvo.
+- [ ] **Acessibilidade:** escala de fonte normal e ampliada, contraste, alvos de toque confortáveis e descrições úteis para elementos acionáveis sem texto.
+- [ ] **Voltar:** retorna de Destino avançado e Medição manual ao painel sem criar ciclos; saída coerente a partir do painel e dos atalhos.
+- [ ] **Rolagem:** conteúdo completo acessível, sem prender o gesto; testar toque e coroa/bezel onde disponível.
+- [ ] **Estados:** bateria e mensagens atualizadas ao voltar ao primeiro plano; ausência de destino, recurso indisponível e falhas recuperáveis com instruções claras.
+- [ ] **Ícones e nomes:** WatchReserve consistente no app, tile e complicação; ícones distintos e legíveis, sem depender só de cor para comunicar estado.
+- [ ] **Recursos opcionais:** LTE ausente sem `FEATURE_TELEPHONY`; Saúde atende aos pacotes Samsung suportados ou apresenta alternativa clara quando ausente.
+- [ ] **Atalhos:** Home, tile e complicação usam o destino esperado e mantêm a confirmação Samsung.
+
+Registre achados e correções antes de fechar o bug sweep. Mantenha pendente a verificação visual/física que ainda não ocorreu; uma inspeção de código não permite declarar um modelo validado.
 
 ## Atalhos e contagem de ações
 
