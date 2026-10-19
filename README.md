@@ -19,6 +19,8 @@ O app não precisa permanecer aberto e não usa monitoramento contínuo, sensore
 
 ## Instalar e usar
 
+**[Baixar APK da prévia v0.1.0](https://github.com/brenopoubel0324/Watch8-Battery/releases/download/v0.1.0/Watch8-Battery-0.1.0.apk)** · [Checksum SHA-256](https://github.com/brenopoubel0324/Watch8-Battery/releases/download/v0.1.0/Watch8-Battery-0.1.0.apk.sha256)
+
 Baixe um APK em [Releases](https://github.com/brenopoubel0324/Watch8-Battery/releases), confira as notas da versão e siga o [guia de instalação](docs/adb.md): pelo celular com Bugjaeger ou pelo PC com ADB. A instalação e a conexão física foram adiadas a pedido do usuário; não são necessárias para baixar e guardar a prévia. As notas distinguem uma versão compilada de uma versão testada fisicamente e informam o firmware quando houver validação.
 
 Depois da instalação:

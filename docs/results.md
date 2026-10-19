@@ -40,11 +40,23 @@ Links locais da documentação foram verificados. Os resultados de build, lint, 
 - APK de release otimizado com R8 e `lintVitalRelease` concluídos.
 - APK assinado com certificado persistente; `apksigner verify` e `zipalign -c -P 16 4` passaram.
 - O certificado do APK corresponde ao hash público em `signing-certificate.sha256`.
+- A assinatura foi repetida no Windows PowerShell 5.1 usando os arquivos do backup privado, sem gerar outra identidade.
 - O APK final não é depurável e declara somente a permissão de assinatura interna adicionada pelo AndroidX; não solicita internet, sensores ou escrita de configurações.
 - Diagnóstico simulado passou em PowerShell 7.6 e Windows PowerShell 5.1, incluindo privacidade, seleção de aparelho e reaplicação de ACL.
 - Revisão independente do código e dos scripts sem achados bloqueantes ou altos após as correções.
 
 O [workflow Android](https://github.com/brenopoubel0324/Watch8-Battery/actions/workflows/android.yml) verifica o app no Linux e o diagnóstico nas duas versões de PowerShell no Windows. Seu histórico público registra o resultado de cada execução.
+
+## Publicação v0.1.0
+
+- [Prévia publicada](https://github.com/brenopoubel0324/Watch8-Battery/releases/tag/v0.1.0), marcada como prerelease.
+- Commit de código e tag: `c66d8b747f5b2ebdd3971b147fa790e7a5ba54e4`.
+- APK: `Watch8-Battery-0.1.0.apk`, 2.968.209 bytes.
+- SHA-256: `8f8777f4282dd63d06164f924346808cd55431676b1ae1eb58129dce5a1617dc`.
+- Download dos assets do GitHub conferido: hash e assinatura válidos.
+- [Primeira execução de CI](https://github.com/brenopoubel0324/Watch8-Battery/actions/runs/39279051822): aguardando runners na última consulta desta entrega. Isso não equivale a aprovação remota; os resultados locais acima foram executados de fato.
+
+Bug sweep e análise de lacunas: sem achados bloqueantes ou altos no código entregue; nenhuma chave, senha ou diagnóstico bruto versionado. Permanecem a execução remota da CI e as validações físicas explicitadas nesta página.
 
 ## Próxima evidência necessária
 

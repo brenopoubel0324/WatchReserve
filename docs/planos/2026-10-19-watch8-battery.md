@@ -19,9 +19,9 @@ O usuário autorizou o projeto independente em `C:\Users\breno\code\GitHub\Watch
 
 ## Critérios de Aceite
 
-- [ ] Repositório público em `main`, com código, wrapper, documentação e CI de leitura.
+- [x] Repositório público em `main`, com código, wrapper, documentação e CI de leitura.
 - [x] Build local, lint, 17 testes JVM, diagnóstico simulado e bug sweep concluídos.
-- [ ] APK de prévia assinado com chave persistente e publicado com tag e limitações explícitas.
+- [x] APK de prévia assinado com chave persistente e publicado com tag e limitações explícitas.
 - [ ] Home, tile e complicação comprovados no Watch8, inclusive após reinício e morte normal do processo.
 - [ ] Firmware e versão do pacote da activity candidata registrados de forma privada; resumo técnico público revisado.
 - [ ] Ao menos um atalho reduz ações até a confirmação de “Só relógio”, contra o melhor caminho nativo.
@@ -48,7 +48,7 @@ Esta prévia não aplica esses controles nem solicita `WRITE_SECURE_SETTINGS`.
 
 ## Progresso em 19/10/2026
 
-**Estado: prévia implementada e validada localmente; publicação em andamento.** Código, wrapper, CI, documentação e diagnóstico estão preparados. Os builds debug/release, os 17 testes JVM e o lint passaram. O APK está assinado, com certificado fixado e alinhamento verificado. A publicação e a validação física permanecem etapas distintas.
+**Estado: prévia v0.1.0 publicada; validação física adiada.** Código, wrapper, CI, documentação e diagnóstico estão no GitHub público. Os builds debug/release, os 17 testes JVM e o lint passaram localmente. O APK está assinado, com certificado fixado e alinhamento verificado; seu download público também foi conferido. A assinatura foi validada com os arquivos do backup privado. A primeira execução do GitHub Actions ainda aguardava runners na última consulta; consulte o histórico público para o estado atual.
 
 O usuário adiou a conexão física e poderá instalar depois, pelo celular com Bugjaeger ou pelo PC com ADB. Esta entrega pode publicar uma prévia sem depender do relógio; nenhum novo pareamento é exigido agora. Continuam pendentes a identificação do firmware, a abertura da confirmação Samsung pelo APK, a seleção em Home, os testes em mostrador e as medições de autonomia. Nenhum resultado de economia está confirmado.
 
