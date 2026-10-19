@@ -59,19 +59,31 @@ O [workflow Android](https://github.com/brenopoubel0324/WatchReserve/actions/wor
 
 Na entrega da v0.1.0, o bug sweep local não encontrou achados bloqueantes ou altos e a CI ainda aguardava execução. A falha posterior de preparação do SDK está registrada acima e foi incorporada à revisão da v0.2.0. Nenhuma chave, senha ou diagnóstico bruto foi versionado.
 
-## Evolução v0.2.0 — em preparação
+## Publicação v0.2.0 — WatchReserve
 
 Nome público WatchReserve e foco ampliado para a linha Galaxy Watch com Wear OS. A documentação descreve a [matriz de alvos](compatibility.md), seleção por recursos e [revisão funcional com acabamento](validation.md). A prova Samsung continua específica ao firmware e à versão do pacote candidato.
 
-Application ID, componentes e identidade de assinatura da v0.1.0 permanecem iguais. Os artefatos históricos acima conservam seus nomes, commit e hash; a próxima release usará `WatchReserve-0.2.0.apk`.
+Application ID, componentes e identidade de assinatura da v0.1.0 permanecem iguais. Os artefatos históricos acima conservam seus nomes, commit e hash; a nova release usa `WatchReserve-0.2.0.apk`.
 
 Nesta etapa foram implementados LTE condicionado a `FEATURE_TELEPHONY`, procura dos dois pacotes Samsung Health declarados, retorno das páginas internas, estado de rolagem por página, mensagens novas no topo com anúncio acessível, campo de toque mínimo de 48 dp e tratamento de rolagem por coroa/bezel. Tile e ícones foram alinhados ao nome; a prévia vetorial do tile é uma ilustração aproximada, não uma captura de execução.
 
 O diagnóstico simulado passou no PowerShell 7.6 e no Windows PowerShell 5.1 após a troca para o diretório WatchReserveDiagnostics; o BOM UTF-8 foi preservado nos scripts. A revisão funcional e de acabamento teve três rodadas de inspeção de código. Foram corrigidos os achados de navegação, recursos opcionais, rolagem, repetição de avisos e ícones; não restaram achados bloqueantes, altos ou médios nos diffs de UI. O workflow passou no `actionlint`.
 
-Após a última correção de mensagens, `assembleDebug`, os 17 testes JVM e `lintDebug` passaram no caminho local final WatchReserve. O lint manteve zero erros e dez avisos de atualização de dependências. A assinatura e a publicação do APK de release ainda estão em preparação. Os checks históricos não são usados como evidência desta versão. Não há teste físico nem ganho de autonomia confirmado em nenhum alvo.
+Após a última correção de mensagens, `assembleDebug`, os 17 testes JVM e `lintDebug` passaram no caminho local final WatchReserve. O lint manteve zero erros e dez avisos de atualização de dependências. `assembleRelease`, R8 e `lintVitalRelease` também passaram. Nome, versionCode `2`, versionName `0.2.0`, API mínima 30/alvo 36 e permissões foram conferidos no APK. A release não é depurável e mantém somente a permissão de assinatura interna do AndroidX.
+
+- [Prévia publicada](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.2.0), marcada como prerelease.
+- Commit de código e tag: `46174e9f4903f6dbd8c00666dd81c2143080d336`.
+- APK: `WatchReserve-0.2.0.apk`, 2.968.265 bytes.
+- SHA-256: `5634321f42c1ff39496db7982cfd3e87269ea6e97db8effd8acc879880ac850d`.
+- Assinatura persistente, certificado fixado e alinhamento de 16 KiB verificados.
+- Download público sem autenticação conferido: APK e checksum correspondem; assinatura válida e mesmo certificado da v0.1.0.
+- [CI da v0.2.0](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39311475179): **aprovada**, incluindo build/lint/testes no Ubuntu e diagnóstico nas duas versões de PowerShell no Windows. O SDK foi preparado com sucesso; os avisos de atualização das actions não impediram a execução.
+
+Os checks históricos não são usados como evidência desta versão. Não há teste físico nem ganho de autonomia confirmado em nenhum alvo.
 
 **Verificação visual pendente:** a tentativa de renderização dos vetores no Chrome foi bloqueada pela política de execução do ambiente. Não houve observação da interface em emulador ou relógio. A interação do teclado com foco/rolagem rotativa, a fonte ampliada e os cortes em telas circulares pequenas permanecem no roteiro de teste; inspeção de código não comprova esses resultados.
+
+Bug sweep final: diff, Git, mudanças recentes, recursos opcionais, componentes Android, assinatura, links, permissões e resultados revisados; sem achados bloqueantes ou altos remanescentes. As lacunas são a verificação visual, a validação física por modelo/firmware e a medição de autonomia. Nenhuma chave, senha ou coleta privada foi publicada.
 
 ## Próxima evidência necessária
 

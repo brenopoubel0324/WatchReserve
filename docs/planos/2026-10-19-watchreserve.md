@@ -29,7 +29,7 @@ Compatibilidade prevista abrange a linha Galaxy Watch com Wear OS, a partir da f
 
 Achados corrigidos na revisão: nível médio — botão LTE sem verificar telefonia, Saúde restrita a um dos dois pacotes declarados, ausência de retorno interno pelo botão Voltar, rolagem compartilhada entre páginas e mensagens fora da área visível; nível baixo — nome do tile duplicado, ícones opacos, campo com alvo pequeno e repetição de avisos sem nova rolagem. Três rodadas de inspeção concluídas, sem achados bloqueantes, altos ou médios remanescentes nos diffs de UI. A revisão identificou também a falha da primeira CI por ausência de SDK; preparação explícita adicionada e validada com `actionlint`.
 
-Próxima entrega: **v0.2.0**, com APK `WatchReserve-0.2.0.apk`. Preservar application ID `dev.brenopoubel.watch8battery`, nomes dos componentes, alias, certificado e os diretórios privados legados de assinatura; não recriar a identidade. Diagnósticos novos usam `%LOCALAPPDATA%\WatchReserveDiagnostics` e prefixo `watchreserve-`. A v0.1.0 permanece histórica, sem alterar asset, hash ou commit.
+Entrega publicada: **v0.2.0**, com APK `WatchReserve-0.2.0.apk`. Application ID `dev.brenopoubel.watch8battery`, nomes dos componentes, alias, certificado e os diretórios privados legados de assinatura foram preservados. Diagnósticos novos usam `%LOCALAPPDATA%\WatchReserveDiagnostics` e prefixo `watchreserve-`. A v0.1.0 permanece histórica, sem alterar asset, hash ou commit.
 
 ## Critérios de Aceite
 
@@ -39,7 +39,7 @@ Próxima entrega: **v0.2.0**, com APK `WatchReserve-0.2.0.apk`. Preservar applic
 - [x] Nome WatchReserve e URLs canônicas aplicados; identidade Android preservada para atualização da v0.1.0.
 - [x] Adaptação por recursos implementada e revisada no código: LTE condicionado à telefonia e ambos os pacotes Saúde declarados.
 - [x] Revisão funcional e de acabamento da v0.2.0 concluída no código; testes visuais/físicos pendentes explicitamente.
-- [ ] Build, lint, testes e assinatura da v0.2.0 executados e registrados após a mudança.
+- [x] Build, lint, testes, assinatura e CI da v0.2.0 executados e registrados após a mudança.
 - [ ] Home, tile e complicação comprovados no Watch8, inclusive após reinício e morte normal do processo.
 - [ ] Firmware e versão do pacote da activity candidata registrados de forma privada; resumo técnico público revisado.
 - [ ] Ao menos um atalho reduz ações até a confirmação de “Só relógio”, contra o melhor caminho nativo.
@@ -66,9 +66,9 @@ Esta prévia não aplica esses controles nem solicita `WRITE_SECURE_SETTINGS`.
 
 ## Progresso em 19/10/2026
 
-**Estado: prévia v0.1.0 publicada; validação física adiada.** Código, wrapper, CI, documentação e diagnóstico estão no GitHub público. Os builds debug/release, os 17 testes JVM e o lint passaram localmente. O APK está assinado, com certificado fixado e alinhamento verificado; seu download público também foi conferido. A assinatura foi validada com os arquivos do backup privado. A primeira execução do GitHub Actions ainda aguardava runners na última consulta; consulte o histórico público para o estado atual.
+**Histórico da v0.1.0:** código, wrapper, CI, documentação, diagnóstico e APK assinado foram publicados, com validação física adiada. Builds debug/release, 17 testes JVM, lint e download público passaram localmente. A assinatura foi validada com os arquivos do backup privado. A CI aguardava runners naquela entrega; depois falhou por ausência do SDK, corrigida na v0.2.0 abaixo.
 
-**v0.2.0 em implementação:** ampliação para Galaxy Watch Wear OS, nome WatchReserve, adaptação de recursos e revisão funcional com acabamento. Os resultados históricos da v0.1.0 acima não equivalem à verificação desta nova versão; registrar os novos checks somente após execução. Consulte a [matriz de compatibilidade](../compatibility.md) e o [roteiro de revisão](../validation.md).
+**v0.2.0 publicada:** ampliação para Galaxy Watch Wear OS, nome WatchReserve, adaptação de recursos e revisão funcional com acabamento em três rodadas de inspeção de código. Builds debug/release, 17 testes JVM, lint sem erros, actionlint, diagnóstico em PowerShell 7.6/5.1, assinatura, alinhamento e download público passaram. A [CI desta versão](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39311475179) foi aprovada nos dois jobs. O APK mantém a identidade da primeira release. Os testes visuais em emulador/relógio continuam pendentes; a tentativa de renderizar os vetores no Chrome foi bloqueada pela política de execução. Consulte os [resultados](../results.md), a [matriz de compatibilidade](../compatibility.md) e o [roteiro de revisão](../validation.md).
 
 O usuário adiou a conexão física e poderá instalar depois, pelo celular com Bugjaeger ou pelo PC com ADB. Esta entrega pode publicar uma prévia sem depender do relógio; nenhum novo pareamento é exigido agora. Continuam pendentes a identificação do firmware, a abertura da confirmação Samsung pelo APK, a seleção em Home, os testes em mostrador e as medições de autonomia. Nenhum resultado de economia está confirmado.
 
