@@ -69,6 +69,7 @@ O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. El
 - [Resultados técnicos e limitações conhecidas](docs/results.md).
 - [Investigação futura de controles por ADB](docs/experiments.md).
 - [Assinatura e publicação](docs/releases.md).
+- [Estudo do Flashpay: atalhos, interface e limites](docs/referencias/flashpay-wearos.md).
 
 Resultados públicos devem usar somente informações técnicas revisadas. Seriais, endereços de rede, fingerprints, dumps, capturas pessoais, credenciais e chaves não pertencem ao Git. O script de diagnóstico grava os dados fora do repositório e não os envia à rede.
 

@@ -64,6 +64,18 @@ Uma eventual implementação de controles deve manter uma única sessão persist
 
 Esta prévia não aplica esses controles nem solicita `WRITE_SECURE_SETTINGS`.
 
+## Estudo do Flashpay em 19/10/2026
+
+Referência indicada pelo usuário: `TransitNow/flashpay-wearos`, commit `9451df887b62e8b172ad930f8ebeb189df02494b`. O estudo compara atalhos, início da atividade, interface circular e custos de execução com a v0.2.0 do WatchReserve.
+
+1. [x] Inspecionar manifesto, atividades, temas, layout, diagnóstico, build e captura pública do menu; conferir a existência de licença explícita.
+2. [x] Separar padrões úteis de mecanismos que não controlam a economia do sistema; comparar com o código atual.
+3. [x] Registrar [evidências e prioridades](../referencias/flashpay-wearos.md), sem copiar código/ativos nem alterar o APK.
+
+Priorizar a revisão de layout circular e a medição da abertura do atalho. O exemplo de menu e alias separados é uma alternativa de navegação a investigar; a entrada única do launcher prevista neste plano permanece na v0.2.0. Qualquer mudança futura deve preservar os componentes já usados por Home, tile e complicação e ser comprovada no seletor Samsung do firmware testado.
+
+O estudo não identificou integração com “Só relógio”, tile, complicação ou controle global de economia no código examinado do Flashpay. A descoberta e a validação Samsung continuam pendentes de teste físico; nenhuma evidência de ganho de autonomia foi adicionada.
+
 ## Progresso em 19/10/2026
 
 **Histórico da v0.1.0:** código, wrapper, CI, documentação, diagnóstico e APK assinado foram publicados, com validação física adiada. Builds debug/release, 17 testes JVM, lint e download público passaram localmente. A assinatura foi validada com os arquivos do backup privado. A CI aguardava runners naquela entrega; depois falhou por ausência do SDK, corrigida na v0.2.0 abaixo.
