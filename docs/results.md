@@ -100,7 +100,13 @@ Corrigidos o estado de destino validado após falha de limpeza e a atualização
 - Assinatura/certificado, metadados, ausência de modo depurável, permissões e alinhamento de 16 KiB conferidos.
 - O roteiro do emulador recusa alvo divergente; fonte e tempo de tela restaurados. Não executa testes automaticamente em todos os dispositivos.
 
-Artefato preparado: `WatchReserve-0.2.1.apk`, versionCode `3`, 2.968.265 bytes, SHA-256 `55e615db70ced8236322db28b4f019d036730663408f280e8d3721b536ff6697`. Publicação e CI serão registradas após conclusão.
+- [Prévia v0.2.1 publicada](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.2.1), marcada como prerelease.
+- Commit de código e tag: `0532462f3adb10f33d11cacc606b872e1657bf36`.
+- APK: `WatchReserve-0.2.1.apk`, versionCode `3`, 2.968.265 bytes.
+- SHA-256: `55e615db70ced8236322db28b4f019d036730663408f280e8d3721b536ff6697`.
+- Download público sem autenticação conferido: APK e checksum correspondem, assinatura válida com o certificado persistente.
+- [CI da v0.2.1](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39318073299): **aprovada nos dois jobs**, com build/lint/testes JVM e compilação do pacote instrumentado no Ubuntu; diagnóstico PowerShell 7/5.1 e sintaxe do roteiro no Windows. A instrumentação foi executada localmente no AVD, não na CI.
+- No APK assinado, painel reabriu após parada forçada; painel e fallback abriram após reiniciar o AVD. O emulador foi encerrado ao terminar, sem encerrar o servidor ADB global nem reiniciar o computador.
 
 Bug sweep: sem achados bloqueantes ou altos remanescentes; contratos e permissões preservados. Cobertura parcial de teclado/acessibilidade e lista circular registrada no relatório. Continuam pendentes as superfícies externas no firmware Samsung, o ciclo de vida completo, outros modelos/API e a autonomia física. Nenhum ganho de bateria declarado.
 
