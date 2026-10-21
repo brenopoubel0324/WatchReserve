@@ -35,7 +35,10 @@ jobs:
           packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
           log-accepted-android-sdk-licenses: false
       - name: Compilar, testar e executar lint
-        run: ./gradlew --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest :app:lintDebug
+        run: >-
+          ./gradlew --no-daemon :app:assembleDebug :app:assembleDebugAndroidTest
+          :app:testDebugUnitTest :app:lintDebug
+          :lab:assembleDebug :lab:assembleDebugAndroidTest :lab:lintDebug
       - name: Guardar relatórios de validação
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -44,6 +47,7 @@ jobs:
           path: |
             app/build/reports/tests/testDebugUnitTest/
             app/build/reports/lint-results-debug.*
+            lab/build/reports/lint-results-debug.*
           if-no-files-found: ignore
           retention-days: 14
 
@@ -61,12 +65,14 @@ jobs:
       - name: Testar compatibilidade com Windows PowerShell
         shell: powershell
         run: .\scripts\tests\Test-Diagnostics.ps1
-      - name: Verificar sintaxe do roteiro de emulador
+      - name: Verificar sintaxe dos roteiros de emulador
         shell: pwsh
         run: |
           $syntaxTokens = $null
           $syntaxErrors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile(
-            "$PWD/scripts/Test-WearEmulator.ps1", [ref]$syntaxTokens, [ref]$syntaxErrors
-          ) | Out-Null
-          if ($syntaxErrors.Count -gt 0) { throw ($syntaxErrors | Out-String) }
+          foreach ($script in @('Test-WearEmulator.ps1', 'Test-PowerControlsLab.ps1')) {
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              "$PWD/scripts/$script", [ref]$syntaxTokens, [ref]$syntaxErrors
+            ) | Out-Null
+            if ($syntaxErrors.Count -gt 0) { throw ($syntaxErrors | Out-String) }
+          }

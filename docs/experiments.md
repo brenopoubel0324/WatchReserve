@@ -4,6 +4,8 @@
 
 Pesquisa e protótipos podem avançar sem conectar o relógio; a liberação como recurso funcional depende da comprovação no firmware real. A [pesquisa de permissões e “Só relógio” em 19/10/2026](referencias/permissoes-e-so-relogio.md) encontrou referências Android e Galaxy Watch para controles diretos. O objetivo do próximo incremento é aplicação e restauração verificáveis; a central de atalhos atual é uma base, não a conclusão do objetivo de economia.
 
+O [laboratório separado](laboratory.md) iniciou essa prova no AVD: o mecanismo AOSP de economia está desativado nessa imagem, por isso uma escrita aceita não foi declarada controle funcional. O módulo lab tem pacote/permissões próprios e não modifica o APK publicado. Localização global e restauração são verificadas separadamente; resultados não representam economia medida ou compatibilidade Samsung.
+
 ## Critério para liberar um controle
 
 Investigue separadamente economia padrão, localização, brilho e tempo de tela. Primeiro identifique a interface suportada no firmware. Confirme aplicação por uma API independente, interface Samsung e comportamento observado; escrever e reler o mesmo campo não basta.

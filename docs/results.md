@@ -110,6 +110,16 @@ Corrigidos o estado de destino validado após falha de limpeza e a atualização
 
 Bug sweep: sem achados bloqueantes ou altos remanescentes; contratos e permissões preservados. Cobertura parcial de teclado/acessibilidade e lista circular registrada no relatório. Continuam pendentes as superfícies externas no firmware Samsung, o ciclo de vida completo, outros modelos/API e a autonomia física. Nenhum ganho de bateria declarado.
 
+## Laboratório de controles — revisão concluída em 21/10/2026
+
+Foi implementado um módulo separado, `:lab`, com aplicação de teste e permissão via ADB apenas nesse pacote. O diretório `app` permanece intacto e a v0.2.1 pública continua sem controles globais. O [guia do laboratório](laboratory.md) descreve as proteções, comandos e limites.
+
+Resultado: localização global alterada e restaurada pelo UID comum do APK, com observação pelo serviço de localização. Escrita sem permissão e após revogação bloqueadas. Interrupção real do processo, preservação da sessão, recusa de reaplicação e recuperação foram exercitadas; a prova normal passou novamente após recuperar.
+
+Economia por `low_power` e política `battery_saver_constants` **não foram validadas**: a imagem Wear OS 5/API 34 informa mecanismo AOSP desativado. Escrita aceita/relida não resultou em estado efetivo reconhecido pelas APIs. Os relatórios mantêm essa distinção; nenhum benefício Samsung ou ganho de autonomia é declarado.
+
+Build debug/androidTest e lint do laboratório aprovados, zero erros e avisos. Os 23 testes JVM e lint do app continuam aprovados (zero erros/doze avisos de atualização). [Autoauditoria](auditorias/2026-10-19-laboratorio.md) concluída em três rodadas, sem achados bloqueantes ou altos remanescentes. [Evidências e hashes dos APKs](evidencias/2026-10-19-controles/README.md) revisados, sem dados privados. Publicação e CI desta etapa serão registradas após conclusão.
+
 ## Próxima evidência necessária
 
 Quando o usuário decidir instalar, usar Bugjaeger no celular ou ADB no PC. A investigação posterior exige coletar versões de forma privada, executar a descoberta somente leitura e testar a abertura pelo próprio APK. Depois registrar os três atalhos, o ciclo de vida e as medições do [roteiro físico](validation.md). Nenhuma conexão física é exigida para esta entrega da prévia.

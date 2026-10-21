@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "WatchReserve"
 include(":app")
+include(":lab")

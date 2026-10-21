@@ -1,0 +1,14 @@
+dev.brenopoubel.watchreserve.lab.PowerControlsProbe:
+Error in evaluateAndRestoreControls(dev.brenopoubel.watchreserve.lab.PowerControlsProbe):
+java.lang.IllegalStateException: Sessão pendente: execute a recuperação antes de outra prova.
+	at dev.brenopoubel.watchreserve.lab.PowerControlsProbe.evaluateAndRestoreControls(PowerControlsProbe.kt:51)
+
+
+Time: 0.083
+There was 1 failure:
+1) evaluateAndRestoreControls(dev.brenopoubel.watchreserve.lab.PowerControlsProbe)
+java.lang.IllegalStateException: Sessão pendente: execute a recuperação antes de outra prova.
+	at dev.brenopoubel.watchreserve.lab.PowerControlsProbe.evaluateAndRestoreControls(PowerControlsProbe.kt:51)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

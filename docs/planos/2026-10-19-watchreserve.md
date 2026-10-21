@@ -66,6 +66,35 @@ Uma eventual implementação de controles deve manter uma única sessão persist
 
 Esta prévia não aplica esses controles nem solicita `WRITE_SECURE_SETTINGS`.
 
+### Próximo incremento — prova isolada no emulador
+
+Revisão do plano pela skill `execution-plan-review` em 19/10/2026. Achados antes de implementar:
+
+| Severidade | Lacuna | Ajuste obrigatório |
+|---|---|---|
+| Alta | Sucesso pelo shell não demonstra escrita pelo APK. | Módulo `lab` com application ID próprio; escritas por `ContentResolver` com UID comum, sem adotar identidade shell. Usar ADB somente para conceder/revogar a permissão do laboratório e preparar a bateria simulada. |
+| Alta | `finally` não protege uma interrupção do processo durante alterações globais. | Salvar uma única sessão em arquivo atômico antes das alterações; recusar nova prova com sessão pendente e oferecer recuperação explícita. Conservar o registro se a restauração falhar. |
+| Alta | Adicionar permissões ao app publicado confundiria prévia e experimento. | Manter o módulo `app` e seu manifesto intactos; laboratório sem launcher, rede, serviços ou variante release. |
+| Média | Ler a chave escrita não comprova efeito no Android. | Observar `PowerManager.isPowerSaveMode` e `getLocationPowerSaveMode`; relatar separadamente compatibilidade emulada e autonomia ainda não medida. |
+| Média | Carregamento bloqueia a economia e altera a interpretação. | Recusar bateria já simulada; simular desconexão apenas no AVD reservado e executar `dumpsys battery reset` ao concluir. |
+
+**APROVADO para esta prova de laboratório após incorporar os ajustes acima.** O plano completo continua parcialmente implementado. A solicitação original já autoriza investigar controles por ADB; esta etapa executa somente essa investigação em um emulador próprio.
+
+1. Criar `:lab`, sem dependência do app principal, com `WRITE_SECURE_SETTINGS` e instrumentação. Não incluir `WRITE_SETTINGS` ainda: brilho e tempo de tela terão prova própria.
+2. Proteger a execução pelo serial, AVD reservado, hardware emulado, tela Wear circular e argumento explícito de laboratório. Gravar os valores anteriores e a observação inicial em `noBackupFilesDir` antes da primeira alteração.
+3. Confirmar bloqueio sem permissão; conceder somente ao APK lab. Solicitar economia padrão por `low_power` e observar o estado pela API pública.
+4. Alterar somente `location_mode` dentro de `battery_saver_constants`, preservando os demais campos; observar o modo efetivo pela API. Esse é um teste de capacidade, não um perfil de economia recomendado.
+5. Revogar a permissão e confirmar bloqueio de escrita. Recuperar a permissão para restaurar a sessão, verificar chaves e APIs, remover a simulação da bateria e devolver a permissão ao estado inicial. Não apagar o registro em falha.
+6. Expor uma execução de recuperação que apenas restaura uma sessão pendente, sem aplicar novo perfil. Recusar execução normal enquanto houver registro pendente.
+7. Compilar/lintar laboratório e app, executar os 23 testes JVM existentes, rodar a prova no AVD e autoauditar implementação/resultados antes de commit. A CI compila a instrumentação, mas não declara execução emulada na nuvem.
+8. Publicar código, roteiro e evidência revisada no GitHub. Não gerar nova release do app de usuário por esta prova. Próximas etapas dependem do resultado: sessão restaurável no app, brilho/tempo de tela e validação Samsung.
+
+Ajuste após a primeira execução: a imagem Wear OS 5 declara `config_batterySaverSupported=false`; a escrita de `low_power` não foi observada pela API e não foi aprovada como controle funcional. Incluir essa capacidade no relatório e testar também localização global por `LocationManager.isLocationEnabled`, com valor anterior na mesma sessão. Uma prova de infraestrutura aprovada não implica economia ou política AOSP aprovadas. Os resultados por controle devem ser explícitos.
+
+Etapa concluída em **21/10/2026**: módulo `:lab` isolado, prova de localização global observada e restaurada no AVD, bloqueio após revogação e recuperação após morte real do processo. Build/lint do laboratório sem erros/avisos e 23 testes JVM do app aprovados. [Auditoria em três rodadas](../auditorias/2026-10-19-laboratorio.md) aprovada para o laboratório; [evidências por controle](../evidencias/2026-10-19-controles/README.md). Economia/política AOSP não validadas na imagem; Samsung e autonomia continuam pendentes. Não houve alteração no APK publicado. O próximo passo específico Samsung é descoberta no Watch8 quando disponível, antes de novas telas de perfil ou automação de “Só relógio”.
+
+Para “Só relógio”, priorizar a descoberta da tela nativa quando o Watch8 estiver disponível. Automação por acessibilidade e comando Samsung direto permanecem alternativas posteriores, sem ativação presumida. Não manter serviço de acessibilidade ou depuração no relógio apenas para sustentar um atalho ainda não comprovado.
+
 ## Estudo do Flashpay em 19/10/2026
 
 Referência indicada pelo usuário: `TransitNow/flashpay-wearos`, commit `9451df887b62e8b172ad930f8ebeb189df02494b`. O estudo compara atalhos, início da atividade, interface circular e custos de execução com a v0.2.0 do WatchReserve.

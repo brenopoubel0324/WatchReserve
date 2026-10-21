@@ -1,0 +1,2 @@
+dev.brenopoubel.watchreserve.lab.PowerControlsProbe:INSTRUMENTATION_RESULT: shortMsg=Process crashed.
+INSTRUMENTATION_CODE: 0

@@ -1,0 +1,6 @@
+{
+  "avd": "WatchReserve_Wear5_Small_Round",
+  "configuration": "config: mcc310-mnc260-en-rUS-ldltr-sw192dp-w192dp-h192dp-small-notlong-round-nowidecg-lowdr-port-watch-notnight-xhdpi-finger-keysexposed-qwerty-navhidden-nonav-384x384-v34\r\nabi: x86_64,arm64-v8a",
+  "labApkSha256": "8b1577f2a2f276aca6892b119bcab9de747b0f96a75f6aceed7be9ceda2e8f67",
+  "testApkSha256": "478eafe8b4c1d6b9a4b58449994ef8f2e8400e817fc01ce8e979a75e7b96f98e"
+}
