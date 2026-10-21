@@ -46,7 +46,7 @@ adb -s $watchSerial install -r '.\app\build\outputs\apk\debug\app-debug.apk'
 
 Para uma release, use o caminho do APK baixado em Releases, como `WatchReserve-0.2.0.apk`. O nome novo preserva application ID e assinatura para atualizar a v0.1.0. Atualizações com `install -r` exigem assinatura compatível; debug e release podem ter chaves diferentes. Não desinstale apenas para contornar um erro sem considerar a perda dos dados locais. [Referência oficial de instalação por ADB](https://developer.android.com/tools/adb#move)
 
-Abra “Só relógio” no launcher do relógio. O seletor Samsung pode identificá-lo como WatchReserve. Depois configure Home, tile e complicação conforme o README. A prévia pode abrir as configurações de economia ou as configurações gerais; ela não confirma que a tela Samsung de “Só relógio” aceita abertura direta.
+Abra “Só relógio” no launcher do relógio. O seletor Samsung pode identificá-lo como WatchReserve. Depois configure Home, tile e complicação conforme o README. Na v0.2.2, os três acessos à confirmação Samsung foram comprovados no Watch8 documentado em [resultados](results.md). Outros modelos e firmwares precisam de validação própria; sem destino validado, o app usa as configurações de economia ou gerais. O painel do app fica em tile WatchReserve → Economia.
 
 ## Coleta privada e somente leitura
 
@@ -104,6 +104,14 @@ permissão. Usa `batterystats --charged`; não usa `--checkin`, cuja implementa�
 consumir o arquivo histórico de check-in. A coleta acorda CPU/serviços e deve ser feita fora
 da janela de autonomia, com depuração desligada entre as leituras. As consultas são
 sequenciais; não representam uma amostra atômica de todos os serviços.
+
+No Watch8 do usuário, a economia Samsung desliga Wi-Fi e impede a conexão ADB sem fio durante
+esse uso. Faça a primeira leitura antes de ativá-la e a segunda depois do intervalo, após
+desativá-la para reconectar. Registre duração e transições; os contadores incluem essa
+sobrecarga e a segunda leitura mostra a política já fora da economia. As leituras não
+comprovam o estado efetivo durante o intervalo. Não altere a economia para forçar Wi-Fi
+ligado na referência. Uma coleta local pelo APK, com exportação posterior, ainda precisa
+ser implementada e ter suas permissões comprovadas no firmware.
 
 O pacote de alarme consultado é o observado na investigação Samsung, não uma identificação
 universal do app escolhido pelo usuário. Confirmar qual alarme é usado antes de planejar

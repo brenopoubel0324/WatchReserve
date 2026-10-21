@@ -121,9 +121,16 @@ Achados prévios pela revisão de execução já adotada no projeto:
    nenhum grant, reset de estatísticas, bateria simulada, force-idle ou alteração de pacote.
 2. Testar o coletor com ADB simulado em PowerShell 7 e 5.1, incluindo recusa sem opt-in privado,
    falha isolada/timeout de serviço e garantia de não executar comandos de escrita.
-3. Na próxima sessão física, coletar a configuração econômica real. Usar duas leituras de
-   contadores em janela com depuração desligada entre elas; rejeitar recarga/reset/atualização
-   que invalide a comparação. Traces curtos só quando necessários, fora da medição de autonomia.
+3. O usuário confirmou que a economia nativa desliga Wi-Fi. Para ADB pelo PC, fazer uma leitura
+   antes de ativar a economia e outra após o intervalo, quando ela for desativada para reconectar.
+   Durante o intervalo manter a configuração econômica real, sem depuração. Registrar as
+   transições e seu tempo: os deltas incluem essa sobrecarga e não são uma amostra direta da
+   política efetiva enquanto a economia estava ligada. Rejeitar recarga/reset/atualização que
+   invalide contadores; usar transições equivalentes nas comparações.
+   Para observar a política durante a economia, investigar separadamente uma coleta local pelo
+   UID do APK, sujeita à prova das permissões no firmware, com exportação posterior. Essa coleta
+   local ainda não está implementada. Não manter Wi-Fi ligado artificialmente para medir a
+   referência. Traces curtos só quando necessários, fora da medição de autonomia.
 4. Escolher a primeira intervenção pelos contadores. Preparar a prova isolada e a recuperação,
    testar o alarme e comparar com a referência. Não construir novos perfis de interface antes
    de encontrar um controle útil e acessível.

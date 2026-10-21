@@ -191,6 +191,15 @@ Testes com ADB simulado aprovados em PowerShell 7.6 e Windows PowerShell 5.1, co
 proteções de privacidade/alvo e falhas de consulta. A nova opção ainda não foi executada no
 Watch8. Nenhuma nova conexão ou alteração no relógio, mudança no APK ou nova release.
 Os testes Android não foram repetidos localmente, pois o código Android não mudou.
+[CI aprovada nos jobs diagnostics e checks](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39678859284),
+incluindo build, lint e testes Android configurados no workflow.
+
+O usuário confirmou que a economia Samsung desliga Wi-Fi. O procedimento passa a usar
+leituras ADB antes e depois do intervalo econômico, com registro das transições e sem
+depuração durante o intervalo. Esses deltas incluem a sobrecarga das transições e não
+comprovam a política efetiva enquanto a economia estava ligada. Coleta local pelo APK é
+uma possibilidade ainda não implementada nem validada no firmware. Nenhuma nova coleta
+física ou alteração no relógio foi feita para essa adaptação.
 
 ### Continuação física
 

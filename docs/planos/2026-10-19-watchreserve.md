@@ -207,8 +207,11 @@ coleta estava desligada. Low Power Standby declara suporte falso. São limites c
 não ganhos a prometer. Nenhuma nova conexão ou alteração no relógio foi realizada.
 
 O coletor ganhou `-CapturePower`, privado, com serial explícito e verificação de relógio.
-Próxima sessão: observar a configuração econômica real e contadores de atividade; depois
-selecionar uma intervenção isolada, com restauração e teste físico do alarme nativo. AppOps,
+O usuário confirmou que a economia Samsung desliga Wi-Fi. Próxima sessão: ler contadores
+antes e depois de um intervalo econômico sem depuração, registrando a sobrecarga das
+transições. O ADB reconectado não comprova a política efetiva durante o intervalo; investigar
+coleta local pelo APK separadamente, ainda sem implementação ou prova de permissões.
+Depois selecionar uma intervenção isolada, com restauração e teste físico do alarme nativo. AppOps,
 controle de pacotes e Doze forçado têm acesso distinto de `WRITE_SECURE_SETTINGS`. Não
 habilitar intervenções pelo fato de o comando existir no AOSP.
 
