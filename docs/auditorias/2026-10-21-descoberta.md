@@ -44,10 +44,12 @@ incluindo a nova regressão com os flags reais de Home e painel aberto. Oito cap
 revisadas; fonte e tempo de tela restaurados e emulador encerrado. Eles não cobrem o provedor
 Samsung. A abertura pelo APK foi executada fisicamente nesta sessão. Os
 cenários de ausência/ambiguidade da busca foram revisados no código, sem outro firmware
-físico para exercitá-los. Não há nova aprovação de fonte ampliada ou acessibilidade.
+físico para exercitá-los. Fonte ampliada revisada no AVD; acessibilidade e fonte ampliada
+no relógio físico continuam pendentes.
 
 Revisão final após o ajuste de acabamento: **APROVADO para a prévia 0.2.2 e para a abertura
-da confirmação no SM-L325F/L325FXXS3AZF4**. Não é aprovação de todos os acessos ou de economia.
+da confirmação no SM-L325F/L325FXXS3AZF4**. Não é aprovação do ciclo de vida completo ou de
+ganho de autonomia.
 O teste enviado pelo shell abriu apenas a atividade do WatchReserve; a chamada Samsung saiu
 do próprio app. Após corrigir a retomada de tarefa, a chamada com os flags reais funcionou no
 Watch8 e o usuário confirmou o duplo clique físico. Home reduziu navegação desde o mostrador;
@@ -61,3 +63,7 @@ de evidência revisados. Sem achados bloqueantes ou altos remanescentes na corre
 Dumps, APKs Samsung e identificadores ficam privados. A integração completa permanece em
 validação; nenhum ganho de autonomia ou redução de ações foi declarado. `git diff --check`,
 UTF-8 e links locais verificados. Nenhuma modificação no laboratório ou contrato de armazenamento.
+
+[CI aprovada nos dois jobs](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39674549630)
+e [release v0.2.2 publicada](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.2.2).
+Download público sem autenticação conferido contra o hash do APK testado fisicamente.

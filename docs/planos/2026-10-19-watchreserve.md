@@ -13,7 +13,7 @@ labels:
 
 ## Resumo Trello
 
-Criar um app pessoal para Galaxy Watch com Wear OS/API 30+, da família Watch4 em diante, com Home, tile e complicação para facilitar o acesso ao modo Samsung “Só relógio”, além de uma central de ajustes manuais. Incluir variantes Classic, Pro, FE e Ultra quando atenderem à plataforma; excluir Tizen. O Watch8 LTE de 40 mm continua a primeira referência, sem validação física. Publicar código, instruções, verificações e APKs assinados no repositório público `brenopoubel0324/WatchReserve`.
+Criar um app pessoal para Galaxy Watch com Wear OS/API 30+, da família Watch4 em diante, com Home, tile e complicação para facilitar o acesso ao modo Samsung “Só relógio”, além de uma central de ajustes manuais. Incluir variantes Classic, Pro, FE e Ultra quando atenderem à plataforma; excluir Tizen. O Watch8 LTE de 40 mm continua a primeira referência, com os três acessos comprovados em uso normal no firmware L325FXXS3AZF4. Publicar código, instruções, verificações e APKs assinados no repositório público `brenopoubel0324/WatchReserve`.
 
 O projeto foi iniciado como Watch8-Battery e passa a usar a pasta independente `C:\Users\breno\code\GitHub\WatchReserve`, incluindo a documentação neste repositório; o backend permanece fora do escopo. O plano aprovado é executado em etapas para não afirmar funcionamento Samsung nem economia sem prova física. `card_key: watch8-battery` permanece como identificador persistido do plano.
 
@@ -185,6 +185,13 @@ com os flags reais e painel aberto passou; após atualizar, o usuário confirmou
 físico abrindo diretamente a confirmação, desde o mostrador. Primeiro acesso útil comprovado.
 O usuário também adicionou tile e complicação e confirmou a abertura por ambos. Três acessos
 comprovados em uso normal; ciclo de vida completo e autonomia continuam pendentes.
+
+**v0.2.2 publicada:** tag no commit `217f31cfc124a6fe8f362fcacf7f4aed76a4fc62`,
+[APK assinado](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.2.2) e
+[CI aprovada](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39674549630) nos dois
+jobs. Download público sem autenticação conferido contra o APK testado. Revisão funcional,
+acabamento e bug sweep concluídos para esta prévia, sem achados bloqueantes ou altos restantes.
+Plano completo parcialmente implementado; controles avançados e autonomia continuam pendentes.
 
 ## Premissas
 

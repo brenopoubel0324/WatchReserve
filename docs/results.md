@@ -158,6 +158,20 @@ medição de autonomia. O usuário também adicionou tile e complicação e conf
 da tela correta por ambos. Nenhuma ativação do modo ou permissão avançada. O ciclo de vida
 completo continua pendente.
 
+- [Prévia v0.2.2 publicada](https://github.com/brenopoubel0324/WatchReserve/releases/tag/v0.2.2),
+  associada à tag no commit `217f31cfc124a6fe8f362fcacf7f4aed76a4fc62`.
+- [CI da v0.2.2](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39674549630):
+  aprovada nos dois jobs. Build/lint/JVM e compilação da instrumentação na CI; execução
+  instrumentada local no AVD, sem confundir as duas evidências.
+- Download público sem autenticação conferido: APK, tamanho e checksum correspondem ao
+  artefato assinado instalado no Watch8. Nenhum dump, APK Samsung ou identificador publicado.
+- Emulador encerrado e cliente ADB do PC desconectado. A depuração no relógio pode permanecer
+  desligada durante o uso normal; desconexão do cliente não a desativa automaticamente.
+
+Bug sweep final da v0.2.2: diff, status, histórico, contratos, permissões, assinatura, hashes,
+links, capturas e CI revisados. Sem achados bloqueantes ou altos remanescentes na prévia;
+ciclo de vida físico completo, controles avançados e autonomia continuam pendentes.
+
 ## Próxima evidência necessária
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
