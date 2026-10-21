@@ -1,6 +1,12 @@
 # Investigação futura de controles por ADB
 
-**Nenhum controle desta página está habilitado na prévia.** O app não pede `WRITE_SECURE_SETTINGS` e o diagnóstico não executa `pm grant` nem escreve configurações. Esta etapa depende de conexão e testes físicos posteriores; foi adiada junto com a instalação do relógio.
+**Nenhum controle desta página está habilitado na prévia.** O app não pede `WRITE_SECURE_SETTINGS` e o diagnóstico não executa `pm grant` nem escreve configurações. Os três atalhos da v0.2.2 já foram confirmados no Watch8; os controles diretos dependem de provas físicas próprias.
+
+Prioridade refinada em 21/10/2026: o usuário quer investigar ganho adicional à economia
+Samsung e preservar apenas o alarme entre as funções discutidas. A [pesquisa aprofundada](referencias/wearos-profundo.md)
+separa políticas nativas já configuradas, opções sem suporte, diagnóstico e candidatos de
+restrição seletiva. O coletor `-CapturePower` prepara a descoberta de atividade residual sem
+aplicar alterações; não disponibiliza controles no APK.
 
 Pesquisa e protótipos podem avançar sem conectar o relógio; a liberação como recurso funcional depende da comprovação no firmware real. A [pesquisa de permissões e “Só relógio” em 19/10/2026](referencias/permissoes-e-so-relogio.md) encontrou referências Android e Galaxy Watch para controles diretos. O objetivo do próximo incremento é aplicação e restauração verificáveis; a central de atalhos atual é uma base, não a conclusão do objetivo de economia.
 

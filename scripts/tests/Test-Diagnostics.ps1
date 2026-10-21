@@ -54,7 +54,26 @@ if ($args -contains 'getprop') {
     return
 }
 if ($args -contains 'resolve-activity') { 'fixture.settings/.Settings'; return }
-if ($args -contains 'dumpsys') { 'FIXTURE-PRIVATE-ACTIVITIES'; return }
+if ($args -contains 'has-feature') {
+    $fixtureCase = [IO.File]::ReadAllText((Join-Path $fixtureFolder 'case.txt'))
+    if ($fixtureCase -eq 'not-watch') { 'false' } else { 'true' }
+    return
+}
+if ($args -contains 'dumpsys') {
+    $fixtureCase = [IO.File]::ReadAllText((Join-Path $fixtureFolder 'case.txt'))
+    if ($args -contains 'activities') { 'FIXTURE-PRIVATE-ACTIVITIES'; return }
+    if ($fixtureCase -eq 'power-failure' -and $args -contains 'jobscheduler') {
+        $global:LASTEXITCODE = 1; 'FIXTURE-PRIVATE-ERROR'; return
+    }
+    if ($fixtureCase -eq 'power-timeout' -and $args -contains 'deviceidle') {
+        'DUMP TIMEOUT: FIXTURE-PRIVATE-PARTIAL'; return
+    }
+    if ($fixtureCase -eq 'power-denied' -and $args -contains 'jobscheduler') {
+        'Permission Denial: FIXTURE-PRIVATE-DENIED'; return
+    }
+    'FIXTURE-PRIVATE-POWER-' + $args[6]; return
+}
+if ($args -contains 'settings') { 'FIXTURE-PRIVATE-SETTING'; return }
 $global:LASTEXITCODE = 1
 '@
     [IO.File]::WriteAllText($fakeAdb, $fakeCode)
@@ -104,9 +123,39 @@ $global:LASTEXITCODE = 1
     }
     Write-Output 'PASS: padrão sanitizado, opt-in privado e ACL em execuções repetidas.'
     Assert-ExpectedFailure { & $diagnosticsScript -AdbPath $fakeAdb -CaptureActivities } 'Use -IncludePrivateDetails'
+    $callsBeforePrivateFailure = @(Get-Content -LiteralPath $callLog).Count
+    Assert-ExpectedFailure { & $diagnosticsScript -AdbPath $fakeAdb -CapturePower } 'Use -IncludePrivateDetails'
+    if (@(Get-Content -LiteralPath $callLog).Count -ne $callsBeforePrivateFailure) {
+        throw 'A coleta de energia sem opt-in iniciou uma consulta ADB.'
+    }
+    Assert-ExpectedFailure { & $diagnosticsScript -AdbPath $fakeAdb -IncludePrivateDetails -CapturePower } 'Use -Serial explícito'
+    [IO.File]::WriteAllText($caseFile, 'not-watch')
+    Assert-ExpectedFailure {
+        & $diagnosticsScript -AdbPath $fakeAdb -Serial 'fixture-watch-a' -IncludePrivateDetails -CapturePower
+    } 'A coleta de energia exige'
+    foreach ($powerCase in @('one', 'power-failure', 'power-timeout', 'power-denied')) {
+        [IO.File]::WriteAllText($caseFile, $powerCase)
+        $result = @(& $diagnosticsScript -AdbPath $fakeAdb -Serial 'fixture-watch-a' -IncludePrivateDetails -CapturePower)
+        if (($result -join ' ') -match 'FIXTURE-PRIVATE') { throw 'Dados privados de energia expostos no console.' }
+        $reportPath = $result[0].Substring('Diagnóstico privado salvo em: '.Length)
+        $powerReport = [IO.File]::ReadAllText($reportPath)
+        if ($powerReport -notmatch 'FIXTURE-PRIVATE-POWER-power' -or
+            $powerReport -notmatch 'FIXTURE-PRIVATE-POWER-batterystats' -or
+            $powerReport -notmatch 'FIXTURE-PRIVATE-POWER-alarm' -or
+            $powerReport -notmatch 'FIXTURE-PRIVATE-SETTING') {
+            throw 'A coleta privada de energia não preservou as consultas disponíveis.'
+        }
+        if ($powerCase -eq 'power-failure' -and $powerReport -notmatch 'CONSULTA FALHOU') {
+            throw 'Falha de serviço não foi registrada.'
+        }
+        if ($powerCase -in @('power-timeout', 'power-denied') -and $powerReport -notmatch 'CONSULTA INCOMPLETA OU INDISPONÍVEL') {
+            throw 'Timeout parcial não foi identificado.'
+        }
+    }
+    Write-Output 'PASS: energia com opt-in privado, falha isolada e timeout parcial sem falsa conclusão.'
     Assert-ExpectedFailure { & $diagnosticsScript -AdbPath $fakeAdb -Serial 'fixture-disconnected' } 'O aparelho escolhido'
     if (@(Get-Content -LiteralPath $callLog | Where-Object {
-        $_ -notmatch '^(devices|-s fixture-watch-a shell (getprop |cmd package resolve-activity |dumpsys activity activities$))'
+        $_ -notmatch '^(devices$|-s fixture-watch-a shell (getprop |cmd package resolve-activity |pm has-feature android\.hardware\.type\.watch$|dumpsys activity activities$|dumpsys -t 10 (power|deviceidle|batterystats --charged|alarm|jobscheduler|activity settings|package com\.samsung\.android\.(watch\.alarm|batterysavingsettings))$|settings get (global (low_power|battery_saver_constants|restricted_device_performance|low_power_back_data_off|wifi_scan_always_enabled|ble_scan_always_enabled|mobile_data_always_on|cached_apps_freezer)|secure (sm_connectivity_disable|location_mode))$))'
     }).Count -gt 0) {
         throw 'O diagnóstico chamou algo fora das consultas permitidas.'
     }

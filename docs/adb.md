@@ -82,6 +82,33 @@ Para investigar a tela Samsung, abra-a manualmente no relógio e solicite uma ca
 
 Esse último arquivo pode conter telas recentes e outros dados sensíveis. Não faça upload do diretório, não copie dumps para issues e revise qualquer trecho antes de compartilhar. O script não coleta pacotes indiscriminadamente nem captura telas.
 
+## Coleta privada de energia e alarmes
+
+A investigação de economia adicional usa uma opção separada, que exige serial explícito,
+consentimento privado e confirmação do recurso Android de relógio:
+
+```powershell
+.\scripts\Collect-WatchDiagnostics.ps1 `
+    -Serial $watchSerial -IncludePrivateDetails -CapturePower
+```
+
+As consultas incluem política de energia, DeviceIdle, Batterystats desde a carga, alarmes,
+jobs, configuração de processos/freezer, dois pacotes Samsung específicos e chaves de
+configuração relacionadas à investigação. O relatório pode conter apps, horários e títulos
+de alarmes; fica no mesmo diretório privado com ACL restrita, sem conteúdo bruto no console.
+Cada consulta de serviço usa timeout de dez segundos e falhas são registradas separadamente,
+preservando os demais resultados. Ausência de informação não é tratada como consumo zero.
+
+Não há reset de estatísticas, simulação de bateria, mudança de Doze, AppOps, pacote ou
+permissão. Usa `batterystats --charged`; não usa `--checkin`, cuja implementação AOSP pode
+consumir o arquivo histórico de check-in. A coleta acorda CPU/serviços e deve ser feita fora
+da janela de autonomia, com depuração desligada entre as leituras. As consultas são
+sequenciais; não representam uma amostra atômica de todos os serviços.
+
+O pacote de alarme consultado é o observado na investigação Samsung, não uma identificação
+universal do app escolhido pelo usuário. Confirmar qual alarme é usado antes de planejar
+qualquer restrição. Veja [achados, limites e próximos experimentos](referencias/wearos-profundo.md).
+
 ## Investigar “Só relógio”
 
 1. Registre a versão do sistema de forma privada e a versão do pacote da activity candidata encontrado na pilha de atividades. Ele pode diferir do pacote das configurações gerais.

@@ -5,7 +5,7 @@ Coleta consultas ADB de somente leitura para investigação local de Galaxy Watc
 .DESCRIPTION
 Não instala, não abre telas e não altera configurações do relógio. Grava somente
 em LOCALAPPDATA\WatchReserveDiagnostics com acesso do usuário atual e SYSTEM.
-Serial, fingerprint e dumps de atividades exigem opções explícitas. Nunca envie
+Serial, fingerprint e dumps de atividades/energia exigem opções explícitas. Nunca envie
 o relatório bruto ao repositório público.
 #>
 [CmdletBinding()]
@@ -13,7 +13,8 @@ param(
     [string]$Serial,
     [string]$AdbPath = 'adb',
     [switch]$IncludePrivateDetails,
-    [switch]$CaptureActivities
+    [switch]$CaptureActivities,
+    [switch]$CapturePower
 )
 
 Set-StrictMode -Version Latest
@@ -24,6 +25,12 @@ if ($env:OS -ne 'Windows_NT' -or [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)
 }
 if ($CaptureActivities -and -not $IncludePrivateDetails) {
     throw 'Use -IncludePrivateDetails junto com -CaptureActivities; a pilha pode conter dados pessoais.'
+}
+if ($CapturePower -and -not $IncludePrivateDetails) {
+    throw 'Use -IncludePrivateDetails junto com -CapturePower; os contadores podem conter apps e alarmes pessoais.'
+}
+if ($CapturePower -and [string]::IsNullOrWhiteSpace($Serial)) {
+    throw 'Use -Serial explícito junto com -CapturePower para escolher o relógio.'
 }
 if ($Serial -and $Serial -notmatch '^[A-Za-z0-9._:\[\]-]+$') {
     throw 'Identificador ADB inválido. Use exatamente o identificador local exibido por adb devices.'
@@ -68,6 +75,10 @@ if ($Serial) {
     throw 'Nenhum aparelho ADB conectado e autorizado. Pareie e conecte o relógio antes da coleta.'
 } else {
     throw 'Há vários aparelhos conectados. Confira adb devices localmente e execute com -Serial explícito.'
+}
+if ($CapturePower) {
+    $isWatch = Invoke-AdbRead -Arguments @('-s', $selectedSerial, 'shell', 'pm', 'has-feature', 'android.hardware.type.watch')
+    if ($isWatch -ne 'true') { throw 'A coleta de energia exige um aparelho com o recurso Android de relógio.' }
 }
 
 $diagnosticsRoot = Join-Path $env:LOCALAPPDATA 'WatchReserveDiagnostics'
@@ -137,6 +148,50 @@ if ($CaptureActivities) {
     $report.Add('--- PILHA DE ATIVIDADES: DADOS POTENCIALMENTE PESSOAIS ---')
     $activityDump = Invoke-AdbRead -Arguments @('-s', $selectedSerial, 'shell', 'dumpsys', 'activity', 'activities')
     $report.Add($activityDump)
+}
+if ($CapturePower) {
+    $report.Add('--- ENERGIA: DADOS POTENCIALMENTE PESSOAIS; NÃO PUBLICAR ---')
+    $report.Add('Coleta fora da medição de autonomia; consultas podem acordar CPU e serviços.')
+    $powerQueries = @(
+        @{ Label = 'PowerManager e política de economia'; Args = @('dumpsys', '-t', '10', 'power') },
+        @{ Label = 'DeviceIdle e allowlists'; Args = @('dumpsys', '-t', '10', 'deviceidle') },
+        # --checkin pode consumir o arquivo histórico de check-in; --charged não faz isso.
+        @{ Label = 'Batterystats desde a carga'; Args = @('dumpsys', '-t', '10', 'batterystats', '--charged') },
+        @{ Label = 'Alarmes agendados'; Args = @('dumpsys', '-t', '10', 'alarm') },
+        @{ Label = 'Tarefas agendadas'; Args = @('dumpsys', '-t', '10', 'jobscheduler') },
+        @{ Label = 'Processos em cache e freezer'; Args = @('dumpsys', '-t', '10', 'activity', 'settings') },
+        @{ Label = 'Pacote Samsung de alarme'; Args = @('dumpsys', '-t', '10', 'package', 'com.samsung.android.watch.alarm') },
+        @{ Label = 'Pacote Samsung de bateria'; Args = @('dumpsys', '-t', '10', 'package', 'com.samsung.android.batterysavingsettings') }
+    )
+    foreach ($powerQuery in $powerQueries) {
+        $report.Add('--- ' + $powerQuery.Label + ' ---')
+        $report.Add('Consulta UTC: ' + [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))
+        try {
+            $value = Invoke-AdbRead -Arguments (@('-s', $selectedSerial, 'shell') + $powerQuery.Args)
+            if ([string]::IsNullOrWhiteSpace($value) -or
+                $value -match '(?im)DUMP TIMEOUT|Permission Denial|Permission denied|Can.t find service|Unable to find package|Unknown (package|option|command)') {
+                $report.Add('CONSULTA INCOMPLETA OU INDISPONÍVEL; não interpretar como ausência de consumo.')
+            } else { $report.Add('Consulta concluída; interpretar somente os campos efetivamente presentes.') }
+            $report.Add($value)
+        } catch {
+            $report.Add('CONSULTA FALHOU; dados indisponíveis, não interpretar como ausência de consumo.')
+        }
+    }
+    foreach ($settingGroup in @(
+        @{ Namespace = 'global'; SettingNames = @('low_power', 'battery_saver_constants', 'restricted_device_performance',
+            'low_power_back_data_off', 'wifi_scan_always_enabled', 'ble_scan_always_enabled',
+            'mobile_data_always_on', 'cached_apps_freezer') },
+        @{ Namespace = 'secure'; SettingNames = @('sm_connectivity_disable', 'location_mode') }
+    )) {
+        foreach ($settingKey in $settingGroup.SettingNames) {
+            $report.Add('--- ' + $settingGroup.Namespace + '.' + $settingKey + ' ---')
+            try {
+                $value = Invoke-AdbRead -Arguments @('-s', $selectedSerial, 'shell', 'settings', 'get',
+                    $settingGroup.Namespace, $settingKey)
+                $report.Add($value)
+            } catch { $report.Add('CONSULTA FALHOU; valor desconhecido.') }
+        }
+    }
 }
 
 $fileName = 'watchreserve-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0, 8) + '.txt'

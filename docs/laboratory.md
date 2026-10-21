@@ -10,7 +10,11 @@ A imagem Wear OS 5/API 34 usada nesta investigação declara `config_batterySave
 
 A localização global é uma prova distinta: escrita de `Settings.Secure.location_mode` pelo UID do APK, observação em `LocationManager.isLocationEnabled` e restauração do estado anterior. Seu efeito no consumo de bateria não é medido por esse teste.
 
-O próximo passo para o recurso Samsung é uma sessão de descoberta no Watch8 quando estiver disponível: identificar versões, observar o que muda ao alternar a economia nativa e localizar a confirmação de “Só relógio”. Antes dessa evidência, novas telas de perfil ou automação por acessibilidade não resolvem a integração desconhecida.
+A v0.2.2 já comprovou a confirmação Samsung e os três acessos em uso normal no Watch8.
+O próximo passo dos controles é observar a economia nativa ligada e a atividade residual,
+conforme a [investigação aprofundada](referencias/wearos-profundo.md). O dump anterior foi
+coletado com economia desligada e declara Low Power Standby sem suporte. As políticas
+completas já incluem várias restrições; novos perfis precisam de ganho adicional demonstrado.
 
 ## Executar no AVD reservado
 

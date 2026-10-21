@@ -174,6 +174,26 @@ ciclo de vida físico completo, controles avançados e autonomia continuam pende
 
 ## Próxima evidência necessária
 
+### Investigação profunda e coletor — 21/10/2026
+
+A prioridade passou a ser ganho adicional sobre a economia Samsung, preservando alarmes.
+Reanálise privada: a política completa já configura Quick Doze, standby, verificação de
+segundo plano e bloqueio de boost; o dump estava com economia desligada. Low Power Standby
+declara suporte falso. Sem causa de consumo residual identificada por essa leitura pontual.
+[Pesquisa com fontes primárias e plano de experimentos](referencias/wearos-profundo.md).
+
+O coletor recebeu `-CapturePower`, com opt-in privado, serial explícito e verificação do
+recurso de relógio. Lê energia, repouso, bateria, alarmes, jobs, freezer e chaves relevantes;
+não concede permissões, altera estado ou reseta estatísticas. Serviço indisponível, acesso
+negado e timeout parcial são sinalizados sem impedir os demais resultados.
+
+Testes com ADB simulado aprovados em PowerShell 7.6 e Windows PowerShell 5.1, cobrindo as
+proteções de privacidade/alvo e falhas de consulta. A nova opção ainda não foi executada no
+Watch8. Nenhuma nova conexão ou alteração no relógio, mudança no APK ou nova release.
+Os testes Android não foram repetidos localmente, pois o código Android não mudou.
+
+### Continuação física
+
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
 
 Após cada etapa, atualizar esta página e as notas da release com o resultado real. Fingerprints, seriais, rede, dumps e dados pessoais ficam fora deste repositório público.

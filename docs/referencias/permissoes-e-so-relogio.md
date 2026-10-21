@@ -4,6 +4,11 @@ Pesquisa em **19/10/2026**, solicitada pelo usuário após a v0.2.1. Escopo: aç
 
 ## Resultado
 
+Atualização em 21/10/2026: a v0.2.2 comprovou a abertura da confirmação e os três acessos no
+Watch8. A investigação seguinte está em [Wear OS profundo e alarmes](wearos-profundo.md),
+com política nativa já configurada, limites de permissão e candidatos ainda não validados.
+O restante desta página preserva o estado histórico da pesquisa de 19/10/2026.
+
 Há fundamentos técnicos para investigar controles diretos com permissões concedidas por ADB. Isso inclui configurar a política do modo de economia, além de ajustes de tela. A v0.2.1 ainda não implementa esses controles; a central de atalhos e a medição não cumprem sozinhas o objetivo de reduzir consumo.
 
 Existência no Android, implementação em outro app e relato em outro Galaxy Watch são evidências diferentes de funcionamento no Watch8. O próximo incremento deve comprovar aplicação e restauração antes de disponibilizar os ajustes como funcionais. Nenhum ganho de autonomia foi medido nesta pesquisa.

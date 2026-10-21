@@ -193,6 +193,25 @@ jobs. Download público sem autenticação conferido contra o APK testado. Revis
 acabamento e bug sweep concluídos para esta prévia, sem achados bloqueantes ou altos restantes.
 Plano completo parcialmente implementado; controles avançados e autonomia continuam pendentes.
 
+## Prioridade refinada — Wear OS profundo e alarmes, 21/10/2026
+
+O usuário quer investigar restrições adicionais às da economia Samsung e informou que,
+entre as funções discutidas, só o alarme precisa continuar funcionando. Priorizar evidência
+de atividade residual da CPU, apps, jobs e rádio antes de implementar mais perfis de ajustes
+comuns. Manter sem root e sem monitoramento contínuo.
+
+A [pesquisa aprofundada](../referencias/wearos-profundo.md) reanalisou os dados privados e
+o APK Samsung da coleta anterior: Quick Doze, standby, verificação de segundo plano e
+bloqueio de boost já estão configurados na política completa; a política efetiva daquela
+coleta estava desligada. Low Power Standby declara suporte falso. São limites concretos,
+não ganhos a prometer. Nenhuma nova conexão ou alteração no relógio foi realizada.
+
+O coletor ganhou `-CapturePower`, privado, com serial explícito e verificação de relógio.
+Próxima sessão: observar a configuração econômica real e contadores de atividade; depois
+selecionar uma intervenção isolada, com restauração e teste físico do alarme nativo. AppOps,
+controle de pacotes e Doze forçado têm acesso distinto de `WRITE_SECURE_SETTINGS`. Não
+habilitar intervenções pelo fato de o comando existir no AOSP.
+
 ## Premissas
 
 Uso pessoal, repositório público, instalação por APK, ADB aceito e sem root. Acionamento manual e máxima autonomia; LTE desligado é uma preferência do usuário. A autonomia informada de três dias e algumas horas com Bluetooth desligado e economia ativa é uma referência inicial, não uma medição controlada. Mostrador próprio e alteração do atraso de “Só relógio” ficam fora desta versão.
