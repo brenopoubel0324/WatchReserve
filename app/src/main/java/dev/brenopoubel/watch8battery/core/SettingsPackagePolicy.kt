@@ -1,6 +1,6 @@
 package dev.brenopoubel.watch8battery.core
 
-/** Provedor descoberto para ACTION_SETTINGS ou ACTION_BATTERY_SAVER_SETTINGS. */
+/** Provedor descoberto para configurações gerais, economia Android ou bateria Samsung. */
 data class SettingsProvider(val packageName: String, val systemApp: Boolean)
 
 object SettingsPackagePolicy {

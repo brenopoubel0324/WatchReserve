@@ -1,0 +1,6 @@
+dev.brenopoubel.watch8battery.core.StoreAndroidFailureTest:..
+dev.brenopoubel.watch8battery.ui.PanelEmulatorTest:.....
+
+Time: 10.484
+
+OK (7 tests)

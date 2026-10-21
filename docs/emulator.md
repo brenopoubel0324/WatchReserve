@@ -42,12 +42,16 @@ Fonte e tempo de tela são alterados apenas no AVD confirmado, com tentativa de 
 
 ## Cobertura e evidências
 
-O pacote instrumentado contém seis testes, executados com fonte 1,0 e 1,3:
+O pacote instrumentado contém sete testes. A revisão da v0.2.1 executou os seis anteriores
+com fonte 1,0 e 1,3; a v0.2.2 acrescenta a regressão de retomada pelo Home:
 
 - Ação principal visível na abertura de uma tela circular e indicação de destino não validado.
 - Entrada em Medição, recriação da atividade e retorno ao painel com Back.
 - Componente inválido, repetição do mesmo erro e bloqueio do teste do destino.
 - Evento Android de rolagem rotativa entregue ao painel em foco.
+- Lançamento da entrada compartilhada com os flags observados no Home Samsung, mesmo com
+  o painel já aberto. O teste exige a criação de `ShortcutActivity`, sem aceitar a simples
+  retomada do painel como sucesso; não substitui o seletor e o botão físico Samsung.
 - Falha real de gravação de preferências sem confirmar o destino no cache.
 - Falha real de gravação sem encerrar uma medição ativa.
 

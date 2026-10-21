@@ -2,13 +2,13 @@
 
 O alvo do projeto é a linha Galaxy Watch com **Wear OS e Android API 30 ou superior**. A Samsung adotou Wear OS a partir da família Watch4; os modelos Tizen anteriores usam outra plataforma e ficam fora deste APK. [Comunicado Samsung](https://developer.samsung.com/galaxy-watch-tizen/notice.html), [tabela oficial dos modelos Tizen](https://developer.samsung.com/galaxy-watch-tizen/device-compatibility.html)
 
-Compatibilidade prevista significa que o app foi desenvolvido para essa plataforma e seus recursos. **Nenhum modelo foi validado fisicamente.** Instalar o APK, resolver um intent ou passar no build não confirma acesso à tela Samsung nem ganho de autonomia.
+Compatibilidade prevista significa que o app foi desenvolvido para essa plataforma e seus recursos. **Abertura pelo APK, Home, tile e complicação foram comprovados em uso normal em uma combinação de Watch8/firmware.** Isso não valida o ciclo de vida completo, outros modelos ou ganho de autonomia. Resolver um intent ou passar no build também não substitui a abertura pelo app.
 
 ## Matriz de alvos
 
 | Família ou variante | Requisito | Estado físico |
 |---|---|---|
-| Galaxy Watch8 LTE de 40 mm | Wear OS/API 30+; primeira referência do projeto | Não testado; conexão adiada pelo usuário. |
+| Galaxy Watch8 LTE de 40 mm | Wear OS/API 30+; primeira referência do projeto | SM-L325F, Android 16/API 36, firmware L325FXXS3AZF4: confirmação aberta pelo UID comum do APK v0.2.2; Home, tile e complicação confirmados pelo usuário em uso normal em 21/10/2026. Ciclo de vida completo e autonomia pendentes. |
 | Famílias Galaxy Watch4 e posteriores | Wear OS/API 30+ no aparelho | Alvo; não testado. |
 | Variantes Classic, Pro, FE e Ultra | Unidade com Wear OS/API 30+ | Alvo; não testado. |
 | Galaxy Watch, Active, Active2, Watch3 e Gear com Tizen | Plataforma Tizen | Fora do escopo; o APK Android não se aplica. |

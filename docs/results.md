@@ -127,8 +127,39 @@ Build debug/androidTest e lint do laboratório aprovados, zero erros e avisos. O
 
 Bug sweep final: contratos, isolamento dos módulos, permissões dos APKs, status Git, links, evidências e CI revisados. Sem achados bloqueantes ou altos; validação física Samsung e autonomia permanecem pendentes.
 
+## Descoberta e prova física — 21/10/2026
+
+Watch8 conectado pelo PC; modelo SM-L325F, Android 16/API 36, firmware L325FXXS3AZF4.
+Com a confirmação aberta manualmente pelo usuário, a coleta identificou
+`com.samsung.android.batterysavingsettings/.wom.WatchOnlyModeActivity`, exportada e sem
+permissão declarada para abertura. A primeira etapa foi somente leitura.
+[Resumo técnico revisado](evidencias/2026-10-21-watch8/README.md).
+
+Achado corrigido na v0.2.2: os intents Android retornam o pacote geral e deixam
+o pacote Samsung de bateria fora da descoberta. A consulta da ação Samsung de bateria foi
+adicionada, preservando filtro de sistema, prova manual e invalidação por versão/firmware.
+Build debug/androidTest e release, lint e 23 testes JVM aprovados; assinatura e alinhamento
+verificados. APK final com 2.984.649 bytes, SHA-256
+`79f2d524ec1360c1a82aa67db9b82d4534e69980f7ca0ca2b747fc650ef855cf`.
+[Revisão funcional e de acabamento](auditorias/2026-10-21-descoberta.md).
+
+A coleta inicial não instalou APK, concedeu permissões ou alterou configurações. Depois, o
+usuário autorizou instalar e testar a v0.2.2: busca, salvamento, abertura pelo UID comum do
+APK, retorno e confirmação local foram executados. A entrada compartilhada abriu novamente
+a tela Samsung. O teste físico de Home encontrou retomada indevida do painel pela afinidade
+compartilhada; a tarefa do atalho foi separada e uma regressão instrumentada foi acrescentada.
+Sete testes passaram em cada escala de fonte (1,0 e 1,3), com oito capturas revisadas.
+[Evidências do AVD](evidencias/2026-10-21-wearos5/README.md).
+
+Após atualizar, o usuário confirmou o duplo clique físico abrindo diretamente a confirmação,
+desde o mostrador. O caminho nativo de referência usa painel rápido, ícone de economia,
+rolagem e seleção de Só relógio. Houve redução de navegação em Home, sem cronometragem ou
+medição de autonomia. O usuário também adicionou tile e complicação e confirmou a abertura
+da tela correta por ambos. Nenhuma ativação do modo ou permissão avançada. O ciclo de vida
+completo continua pendente.
+
 ## Próxima evidência necessária
 
-Quando o usuário decidir instalar, usar Bugjaeger no celular ou ADB no PC. A investigação posterior exige coletar versões de forma privada, executar a descoberta somente leitura e testar a abertura pelo próprio APK. Depois registrar os três atalhos, o ciclo de vida e as medições do [roteiro físico](validation.md). Nenhuma conexão física é exigida para esta entrega da prévia.
+O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
 
 Após cada etapa, atualizar esta página e as notas da release com o resultado real. Fingerprints, seriais, rede, dumps e dados pessoais ficam fora deste repositório público.

@@ -122,6 +122,14 @@ class PanelActivity : ComponentActivity() {
                         Action("Atualizar bateria") { refresh() }
                     }
                     Page.DESTINATION -> {
+                        Action("Buscar tela Samsung") {
+                            val candidate = ShortcutRouter.discoverWatchOnly(this@PanelActivity)
+                            if (candidate.error != null) message = candidate.error
+                            else {
+                                componentText = candidate.component!!.flattenToString()
+                                message = "Candidata encontrada. Salve e teste a abertura antes de confirmar."
+                            }
+                        }
                         Note("Componente (pacote/classe)")
                         BasicTextField(
                             value = componentText,

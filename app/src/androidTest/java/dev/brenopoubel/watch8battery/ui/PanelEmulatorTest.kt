@@ -1,5 +1,6 @@
 package dev.brenopoubel.watch8battery.ui
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.SystemClock
@@ -23,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNotNull
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -39,6 +41,23 @@ class PanelEmulatorTest {
         compose.onNodeWithText("Só relógio").assertIsDisplayed()
         compose.onNodeWithText("Atalho não validado.").assertExists()
         screenshot("home")
+    }
+
+    @Test fun homeLaunchCreatesShortcutEvenWhenPanelIsAlreadyOpen() {
+        compose.onNodeWithText("Configurar Só relógio").performScrollTo().performClick()
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val monitor = instrumentation.addMonitor(ShortcutActivity::class.java.name, null, false)
+        try {
+            compose.activityRule.scenario.onActivity { activity ->
+                // Mesmos flags observados no Home Samsung: não pode apenas retomar o painel.
+                activity.startActivity(Intent(Intent.ACTION_MAIN).setClass(activity, ShortcutActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED))
+            }
+            assertNotNull("Home precisa executar a entrada do atalho, mesmo com o painel aberto.",
+                instrumentation.waitForMonitorWithTimeout(monitor, 5_000))
+        } finally {
+            instrumentation.removeMonitor(monitor)
+        }
     }
 
     @Test fun backReturnsFromMeasurementAndPageSurvivesRecreation() {

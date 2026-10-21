@@ -1,6 +1,6 @@
 # Validação física e autonomia
 
-Este roteiro deve ser executado em cada combinação de modelo e firmware antes de declarar o atalho validado ou afirmar ganho de autonomia. O Galaxy Watch8 LTE de 40 mm continua a primeira referência, com teste físico adiado. A compilação e os testes locais cobrem lógica e contratos Android; não provam o comportamento do firmware Samsung. Veja os [alvos de compatibilidade](compatibility.md).
+Este roteiro deve ser executado em cada combinação de modelo e firmware antes de declarar o atalho validado ou afirmar ganho de autonomia. O Galaxy Watch8 LTE de 40 mm continua a primeira referência: a v0.2.2 abriu a confirmação pelo próprio app, e o usuário confirmou Home, tile e complicação em uso normal no firmware L325FXXS3AZF4. Ciclo de vida completo e autonomia continuam pendentes. A compilação e os testes locais cobrem lógica e contratos Android; não provam sozinhos o comportamento do firmware Samsung. Veja os [alvos de compatibilidade](compatibility.md).
 
 ## Registrar o contexto
 

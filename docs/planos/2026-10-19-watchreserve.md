@@ -41,8 +41,8 @@ Entrega publicada: **v0.2.0**, com APK `WatchReserve-0.2.0.apk`. Application ID 
 - [x] Revisão funcional e de acabamento da v0.2.0 concluída no código; testes visuais/físicos pendentes explicitamente.
 - [x] Build, lint, testes, assinatura e CI da v0.2.0 executados e registrados após a mudança.
 - [ ] Home, tile e complicação comprovados no Watch8, inclusive após reinício e morte normal do processo.
-- [ ] Firmware e versão do pacote da activity candidata registrados de forma privada; resumo técnico público revisado.
-- [ ] Ao menos um atalho reduz ações até a confirmação de “Só relógio”, contra o melhor caminho nativo.
+- [x] Firmware e versão do pacote da activity candidata registrados de forma privada; resumo técnico público revisado.
+- [x] Ao menos um atalho reduz ações até a confirmação de “Só relógio”, contra o melhor caminho nativo: duplo clique Home confirmado pelo usuário em 21/10/2026; caminho nativo relatado pelo ícone de economia no painel rápido.
 - [ ] Nenhuma activity Samsung habilitada sem teste pelo próprio APK com permissões comuns.
 - [ ] Ganho de autonomia medido em janelas equivalentes; resultado inconclusivo aceito.
 
@@ -131,6 +131,60 @@ Correções: cache anterior preservado após falha de persistência, estado visu
 **v0.2.0 publicada — histórico:** ampliação para Galaxy Watch Wear OS, nome WatchReserve, adaptação de recursos e revisão funcional com acabamento em três rodadas de inspeção de código. Builds debug/release, 17 testes JVM, lint sem erros, actionlint, diagnóstico em PowerShell 7.6/5.1, assinatura, alinhamento e download público passaram. A [CI desta versão](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39311475179) foi aprovada nos dois jobs. O APK mantém a identidade da primeira release. Naquela entrega os testes visuais estavam pendentes e a tentativa de renderizar vetores no Chrome foi bloqueada; a v0.2.1 adiciona a emulação descrita acima. Consulte os [resultados](../results.md), a [matriz de compatibilidade](../compatibility.md) e o [roteiro de revisão](../validation.md).
 
 O usuário adiou a conexão física e poderá instalar depois, pelo celular com Bugjaeger ou pelo PC com ADB. Esta entrega pode publicar uma prévia sem depender do relógio; nenhum novo pareamento é exigido agora. Continuam pendentes a identificação do firmware, a abertura da confirmação Samsung pelo APK, a seleção em Home, os testes em mostrador e as medições de autonomia. Nenhum resultado de economia está confirmado.
+
+## Coleta física e ajuste de descoberta — 21/10/2026
+
+O Watch8 foi conectado pelo PC para coleta somente leitura. O usuário abriu manualmente a
+confirmação de “Só relógio”; a atividade em primeiro plano pertence ao pacote Samsung de
+bateria, separado das configurações gerais. Versões e dumps completos permanecem privados.
+Isso identifica uma candidata, sem comprovar abertura pelo UID do WatchReserve.
+
+Revisão de execução: achado alto — o app consulta apenas os intents Android de configurações
+e economia, ambos atendidos pelo pacote geral neste firmware. O pacote real de bateria fica
+fora da lista aceita, apesar de oferecer uma ação Samsung de bateria exportada.
+
+1. Acrescentar `com.samsung.android.watch.ACTION_BATTERY` à descoberta de provedores e às
+   consultas do manifesto. Preservar o filtro de app do sistema, a inspeção de permissões,
+   a prova manual e a invalidação por firmware/versão. Não habilitar automaticamente a candidata.
+2. Compilar, executar lint e testes existentes; conferir o manifesto final e preparar APK
+   assinado 0.2.2. Revisar funcionalidade e acabamento sem introduzir novo fluxo de interface.
+3. Publicar somente o resumo técnico revisado. Instalação e abertura pelo APK constituem a
+   próxima etapa física, após combinar a saída da coleta somente leitura com o usuário.
+   Não conceder permissões, alterar ajustes ou acionar “Só relógio” durante a coleta.
+
+**APROVADO para o ajuste restrito de descoberta**, com as verificações acima. A atividade
+exportada não equivale a uma integração comprovada; Home, tile, complicação e economia de
+ações continuam pendentes. A ativação por broadcast usa permissão Samsung de assinatura e
+não será tentada como alternativa à confirmação nativa.
+
+Após autorização do usuário, a primeira compilação 0.2.2 foi instalada. O painel abriu, mas
+a entrada por ADB no editor de tela cheia do teclado Samsung não preencheu o campo Compose.
+Isso não comprova falha da digitação manual. Replanejamento de acabamento: oferecer busca
+da candidata pela ação Samsung declarada, aceitando somente uma atividade que passe pela
+mesma inspeção de pacote/permissões. A busca apenas preenche o campo; salvar, testar e
+confirmar continuam explícitos. Em ausência ou ambiguidade, manter entrada manual e mensagem.
+Recompilar, assinar e atualizar a instalação antes de testar; não promover a descoberta a prova.
+
+Resultado da etapa: APK release final 0.2.2 instalado; busca encontrou a candidata, salvamento
+e teste pelo próprio app funcionaram. A confirmação Samsung foi observada em captura privada;
+a pilha Android registrou o pacote e o UID comum do WatchReserve como chamador. Retorno e
+confirmação local concluídos; entrada compartilhada abriu novamente a tela, sem ativar o modo.
+Home, tile e complicação reais, ciclo de vida completo, comparação de ações e autonomia
+permanecem pendentes. [Evidência revisada](../evidencias/2026-10-21-watch8/README.md).
+
+Achado alto no teste real de Home: o sistema chamou `ShortcutActivity` com flags
+`0x10200000`, mas retomou o painel existente. Ambas as atividades compartilham afinidade;
+abrir o componente pelo shell sem esses flags não reproduzia o defeito. Corrigir separando
+a afinidade da entrada do atalho, preservando nomes dos componentes e a afinidade do painel.
+Acrescentar regressão instrumentada com painel aberto e os flags reais; validar no AVD
+reservado e repetir no Watch8. O usuário informou um caminho nativo melhor pelo ícone de
+economia no painel rápido; usá-lo como referência em vez de presumir entrada por Ajustes.
+
+A correção passou nos sete testes instrumentados com fontes 1,0 e 1,3. No Watch8, a chamada
+com os flags reais e painel aberto passou; após atualizar, o usuário confirmou o duplo clique
+físico abrindo diretamente a confirmação, desde o mostrador. Primeiro acesso útil comprovado.
+O usuário também adicionou tile e complicação e confirmou a abertura por ambos. Três acessos
+comprovados em uso normal; ciclo de vida completo e autonomia continuam pendentes.
 
 ## Premissas
 

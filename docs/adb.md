@@ -2,7 +2,7 @@
 
 O app funciona desconectado. ADB é usado para instalar e investigar o comportamento do firmware, não para manter a economia funcionando. A depuração deve ser desligada durante as medições de autonomia.
 
-A instalação e os testes físicos foram adiados a pedido do usuário. Os passos abaixo ficam disponíveis para quando for conveniente; não é necessário conectar o relógio nesta entrega.
+Em 21/10/2026, o Watch8 foi conectado pelo PC e a [coleta física](evidencias/2026-10-21-watch8/README.md) identificou a candidata Samsung. Depois, com autorização do usuário para instalar e testar, a v0.2.2 abriu a confirmação pelo UID comum do app. Os testes dos três acessos continuam separados.
 
 ## Opção A: instalar pelo celular com Bugjaeger
 
@@ -16,11 +16,20 @@ Ao terminar, desconecte o Bugjaeger e desligue a depuração sem fio no relógio
 
 Instale Android SDK Platform Tools. Se `adb` não estiver no `PATH`, use seu caminho completo ou adicione a pasta `platform-tools` somente à sessão atual do PowerShell.
 
-No relógio, habilite as opções do desenvolvedor pelo número da versão do software e abra a depuração sem fio. Os rótulos e o caminho podem mudar conforme o firmware. Use a opção de parear novo dispositivo; deixe o código no relógio e responda ao prompt local de `adb pair`:
+No relógio, habilite as opções do desenvolvedor pelo número da versão do software e abra a depuração sem fio. Os rótulos e o caminho podem mudar conforme o firmware. Use a opção de parear novo dispositivo. Execute este bloco e informe o endereço completo de pareamento mostrado no relógio:
 
 ```powershell
-adb pair IP_DO_RELOGIO:PORTA_DE_PAREAMENTO
-adb connect IP_DO_RELOGIO:PORTA_DE_CONEXAO
+$watchPairEndpoint = Read-Host 'IP e porta de pareamento, no formato endereço:porta'
+adb pair $watchPairEndpoint
+```
+
+O endereço contém quatro números separados por pontos, seguidos de dois-pontos e uma porta numérica. Não escreva a palavra `IP` nem o nome de uma variável no lugar do endereço. No prompt `Enter pairing code`, digite somente o código numérico atual e pressione Enter; aguarde o resultado antes de executar outro comando.
+
+Depois de confirmar o pareamento, volte à tela principal de depuração sem fio do relógio e execute este bloco com o endereço de conexão mostrado nela:
+
+```powershell
+$watchConnectEndpoint = Read-Host 'IP e porta de conexão, no formato endereço:porta'
+adb connect $watchConnectEndpoint
 adb devices
 ```
 
@@ -82,7 +91,9 @@ Esse último arquivo pode conter telas recentes e outros dados sensíveis. Não 
 5. Teste a activity pelo APK com permissões comuns. Um `adb shell am start` bem-sucedido usa privilégios do shell e não comprova acesso pelo app.
 6. Só habilite uma integração específica após teste físico, mantendo confirmação nativa, fallback e invalidação quando firmware ou versão do pacote candidato mudar. A candidata deve pertencer a um pacote do sistema que atende às configurações gerais ou de economia; não aceite um componente arbitrário de outro app.
 
-Não existe neste projeto uma activity Samsung presumida como válida. A resolução de `android.settings.BATTERY_SAVER_SETTINGS` prova somente que o sistema declara um destino para esse intent; seu comportamento e a economia de ações exigem teste. [Contrato público de `ACTION_BATTERY_SAVER_SETTINGS`](https://developer.android.com/reference/android/provider/Settings#ACTION_BATTERY_SAVER_SETTINGS)
+A coleta do Watch8 identificou `com.samsung.android.batterysavingsettings/.wom.WatchOnlyModeActivity` como candidata exportada. A v0.2.2 comprovou a abertura pelo próprio APK no firmware L325FXXS3AZF4, preservando a confirmação nativa. Isso não autoriza outros firmwares automaticamente. A descoberta do app também consulta `com.samsung.android.watch.ACTION_BATTERY`, pois neste firmware os intents Android apontam para o pacote geral de configurações. “Buscar tela Samsung” procura a candidata declarada por `ACTION_WATCH_ONLY`; o filtro de pacote do sistema, o teste de abertura e a confirmação manual permanecem obrigatórios.
+
+A resolução de `android.settings.BATTERY_SAVER_SETTINGS` prova somente que o sistema declara um destino para esse intent; seu comportamento e a economia de ações exigem teste. [Contrato público de `ACTION_BATTERY_SAVER_SETTINGS`](https://developer.android.com/reference/android/provider/Settings#ACTION_BATTERY_SAVER_SETTINGS)
 
 ## Encerrar
 

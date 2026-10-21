@@ -40,6 +40,25 @@ class RouteStore internal constructor(private val preferences: SharedPreferences
 }
 
 object ShortcutRouter {
+    /** Localiza uma candidata declarada pelo firmware, sem autorizá-la como destino validado. */
+    @Suppress("DEPRECATION")
+    fun discoverWatchOnly(context: Context): CandidateInspection {
+        val components = try {
+            context.packageManager.queryIntentActivities(
+                Intent("com.samsung.android.watch.ACTION_WATCH_ONLY"), PackageManager.MATCH_DEFAULT_ONLY,
+            ).map { ComponentName(it.activityInfo.packageName, it.activityInfo.name) }.distinct()
+        } catch (_: SecurityException) {
+            return CandidateInspection(null, null, "O sistema bloqueou a busca da tela Samsung.")
+        }
+        val inspected = components.map { inspect(context, it.flattenToString()) }
+            .filter { it.error == null && it.component != null }
+        return when (inspected.size) {
+            0 -> CandidateInspection(null, null, "Nenhuma candidata Samsung acessível. Informe o componente obtido por ADB.")
+            1 -> inspected.single()
+            else -> CandidateInspection(null, null, "Mais de uma candidata encontrada. Informe o componente obtido por ADB.")
+        }
+    }
+
     /** Descobre os provedores do sistema sem presumir que bateria e ajustes usam o mesmo pacote. */
     @Suppress("DEPRECATION")
     fun inspect(context: Context, flattenedComponent: String): CandidateInspection {
@@ -48,7 +67,12 @@ object ShortcutRouter {
         val manager = context.packageManager
         return try {
             // queryIntentActivities lista provedores reais; resolveActivity pode devolver o seletor.
-            val providers = listOf(Settings.ACTION_SETTINGS, Settings.ACTION_BATTERY_SAVER_SETTINGS)
+            val providers = listOf(
+                Settings.ACTION_SETTINGS,
+                Settings.ACTION_BATTERY_SAVER_SETTINGS,
+                // No Watch8/API 36, a bateria Samsung usa outro pacote e esta ação própria.
+                "com.samsung.android.watch.ACTION_BATTERY",
+            )
                 .flatMap { action -> manager.queryIntentActivities(Intent(action), PackageManager.MATCH_DEFAULT_ONLY) }
                 .map { resolved ->
                     val info = resolved.activityInfo
