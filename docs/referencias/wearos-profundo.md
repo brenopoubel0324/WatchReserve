@@ -80,9 +80,11 @@ no aparelho. `DEVICE_POWER`, `CHANGE_COMPONENT_ENABLED_STATE` e `MANAGE_APP_OPS_
 incluem essa flag no manifesto consultado. Conceder a primeira não transforma o app em shell.
 
 Um experimento via PC pode mostrar benefício sem que o APK consiga aplicar/restaurar sozinho.
-Essa diferença deve aparecer no resultado. Uma ponte como Shizuku introduz outro processo,
-precisa de validação no Wear OS e, sem root, normalmente exige nova inicialização após reinício.
-Não será incluída automaticamente nem tratada como consumo zero. [Manual do Shizuku][shizuku]
+Essa diferença deve aparecer no resultado. Uma ponte como Shizuku introduz outro processo e
+precisa de validação no firmware. A versão 13.6.0 anuncia início automático sem root em
+condições específicas no Android 13+ com WLAN confiável; não assumir reinício manual sempre
+obrigatório nem autoarranque disponível com rádios desligados. Não será tratada como consumo
+zero. [Manual do Shizuku][shizuku], [estudo e prova em Wear OS](shizuku-wearos.md).
 
 Pacotes com UID compartilhado não são unidades independentes de isolamento. Não restringir
 UIDs de sistema, o alarme, a interface, os serviços necessários à hora e suas dependências

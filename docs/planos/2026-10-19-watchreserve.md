@@ -215,6 +215,25 @@ Depois selecionar uma intervenção isolada, com restauração e teste físico d
 controle de pacotes e Doze forçado têm acesso distinto de `WRITE_SECURE_SETTINGS`. Não
 habilitar intervenções pelo fato de o comando existir no AOSP.
 
+## Shizuku e próximo incremento — 21/10/2026
+
+O usuário propôs usar Shizuku no próprio relógio e considerar fork para Wear OS se necessário.
+O [estudo e revisão de execução](../referencias/shizuku-wearos.md) priorizam a API oficial:
+o gerenciador original instalou e iniciou como ponte shell no AVD, inclusive com consulta
+de status após Wi-Fi desligado em modo avião e reabertura do processo do gerenciador.
+A interface apresentou cortes em tela circular; autorização do cliente ainda não foi testada.
+[Evidência emulada](../evidencias/2026-10-21-shizuku-wearos5/README.md).
+
+Próximo incremento proposto: cliente de laboratório somente leitura, separado do APK
+publicado, com autorização, verificação de UID, ciclo do Binder e encerramento explícito de
+UserService. Depois provar coleta local sob economia Samsung. Qualquer escrita permanece
+condicionada à sessão restaurável, proteção de alarmes e prova por controle. Sem nova
+dependência no app, fork, instalação no Watch8 ou promessa de economia nesta pesquisa.
+
+Revisão: aprovado para preparar o cliente somente leitura, com os critérios do estudo.
+Fork condicionado a limitação reproduzida de autorização, inicialização ou ciclo de vida;
+preservar licenças e adaptar contratos de identidade se essa necessidade for comprovada.
+
 ## Premissas
 
 Uso pessoal, repositório público, instalação por APK, ADB aceito e sem root. Acionamento manual e máxima autonomia; LTE desligado é uma preferência do usuário. A autonomia informada de três dias e algumas horas com Bluetooth desligado e economia ativa é uma referência inicial, não uma medição controlada. Mostrador próprio e alteração do atraso de “Só relógio” ficam fora desta versão.

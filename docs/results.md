@@ -201,6 +201,23 @@ comprovam a política efetiva enquanto a economia estava ligada. Coleta local pe
 uma possibilidade ainda não implementada nem validada no firmware. Nenhuma nova coleta
 física ou alteração no relógio foi feita para essa adaptação.
 
+### Shizuku oficial no emulador — 21/10/2026
+
+O APK oficial 13.6.0 instalou e iniciou no AVD Wear OS 5/API 34 como ponte shell. Após
+reabertura do processo do gerenciador, o status via Binder confirmou servidor ativo com
+Wi-Fi habilitado e com Wi-Fi desligado em modo avião. Desligamento simples por `svc wifi`
+não permaneceu efetivo nessa imagem; isso foi detectado e não contado como sucesso offline.
+A UI mostrou cortes em tela circular. [Capturas e procedimento](evidencias/2026-10-21-shizuku-wearos5/README.md).
+
+Servidor e instalação de teste removidos; Wi-Fi, modo avião e preferências ADB restaurados
+e AVD encerrado. Sem nova conexão/alteração no Watch8. Nenhuma integração, dependência,
+compilação ou release nova do WatchReserve. Testes Android do projeto não repetidos nesta
+etapa, pois nenhum código ou configuração de build foi alterado.
+
+A prova não cobre autorização de um cliente WatchReserve, controles, reinício, Samsung,
+alarmes ou autonomia. Próximo incremento proposto: cliente isolado somente leitura usando
+a API original, antes de decidir por fork. [Estudo, fontes e revisão](referencias/shizuku-wearos.md).
+
 ### Continuação física
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
