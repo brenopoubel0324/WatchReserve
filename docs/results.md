@@ -218,6 +218,13 @@ A prova não cobre autorização de um cliente WatchReserve, controles, reiníci
 alarmes ou autonomia. Próximo incremento proposto: cliente isolado somente leitura usando
 a API original, antes de decidir por fork. [Estudo, fontes e revisão](referencias/shizuku-wearos.md).
 
+Prioridade refinada pelo relato de Samsung Health e Gemini nos recentes: investigar os
+pacotes/UIDs reais, serviços e atividade acumulada, separando tarefas recentes de execução
+efetiva. Limite de processos em cache é hipótese de experimento; nenhum desses apps foi
+restringido e nenhum ganho foi atribuído a eles. Fontes Android/Google/Samsung e contratos
+de coleta/recuperação revisados no estudo. Apenas documentação mudou nessa atualização:
+links, UTF-8 e diff verificados; build e testes Android não repetidos, sem mudança no código.
+
 ### Continuação física
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.

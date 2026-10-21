@@ -234,6 +234,14 @@ Revisão: aprovado para preparar o cliente somente leitura, com os critérios do
 Fork condicionado a limitação reproduzida de autorização, inicialização ou ciclo de vida;
 preservar licenças e adaptar contratos de identidade se essa necessidade for comprovada.
 
+O usuário indicou Samsung Health e Gemini por sua presença nos recentes e aceita reduzir
+a retenção de apps na RAM. Priorizar esses dois na leitura de processos, serviços e
+contadores por UID, sem tratar recentes como prova de execução ou consumo. Confirmar
+pacotes reais, freezer e opções de ativação do assistente/saúde antes de uma intervenção.
+Investigar limite de processos em cache como teste separado, com valor anterior, comparação
+de reinicializações/atividade, alarme e restauração. Sem limpador periódico de RAM ou
+desativação genérica de componentes do sistema. [Critérios e fontes](../referencias/shizuku-wearos.md#prioridade-samsung-health-gemini-e-memória).
+
 ## Premissas
 
 Uso pessoal, repositório público, instalação por APK, ADB aceito e sem root. Acionamento manual e máxima autonomia; LTE desligado é uma preferência do usuário. A autonomia informada de três dias e algumas horas com Bluetooth desligado e economia ativa é uma referência inicial, não uma medição controlada. Mostrador próprio e alteração do atraso de “Só relógio” ficam fora desta versão.

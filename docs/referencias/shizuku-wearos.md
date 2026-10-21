@@ -83,6 +83,54 @@ do gerenciador, permissão e ações. Um derivado precisa adaptar os contratos c
 e provar autorização/isolamento; não presumir compatibilidade com todos os clientes Shizuku.
 [Constantes do servidor][constants], [provider][provider]
 
+## Prioridade: Samsung Health, Gemini e memória
+
+O usuário relatou que Samsung Health e Gemini continuam aparecendo nos recentes. São os
+primeiros candidatos à investigação, **sem consumo excessivo confirmado**. Os recentes
+representam tarefas acessadas; a presença ali não demonstra processo ativo, serviço,
+despertar ou uso de sensores. [Recentes Android][recents]
+
+O Android pode manter um processo em RAM e congelar suas threads, evitando trabalho de CPU
+e o custo de recriá-lo. Confirmar suporte e estado real do freezer no Samsung; RAM ocupada
+ou quantidade de cartões nos recentes não serão métricas de ganho de bateria. Um limite
+menor pode aumentar reinicializações de apps. Não adicionar um serviço que mate processos
+periodicamente. [Freezer AOSP][freezer-doc]
+
+| Candidato | O que observar | Experimento possível depois da leitura |
+|---|---|---|
+| Gemini | Pacote que realmente hospeda o assistente, UID, serviços, CPU, despertares e estado de “Hey Google”/“Levantar para falar” | Comparar gatilhos desligados; se necessário, testar restrição ou desativação temporária do pacote identificado. Não desativar Google Play Services por suposição. |
+| Samsung Health | Pacote/UID, serviços vinculados, sensores, tarefas, sincronização e estado de “Limitar funções de saúde” na economia | Comparar a referência nativa e depois uma restrição isolada do app. Separar a UI de saúde dos serviços que efetivamente coletam dados. Não desativar a infraestrutura inteira de sensores. |
+| Outros serviços | Atividade acumulada e dependências, inclusive UID compartilhado | Selecionar por evidência de atividade residual; proteger alarme, hora e interface. Sem lista genérica de pacotes a remover. |
+
+O Google documenta que “Hey Google” exige o relógio acordado e que “Levantar para falar”,
+quando disponível e ativado, detecta movimento do braço. Também informa que o app Google
+hospeda recursos usados pelo Gemini; o nome mostrado no launcher não identifica sozinho
+qual pacote/serviço restringir. Os estados dessas opções no Watch8 ainda não foram lidos.
+[Google][gemini]
+
+A Samsung documenta “Limitar funções de saúde” para Watch7/Ultra, com redução de medições
+e detecções em segundo plano. O APK de bateria já inspecionado também contém essa função,
+mas seu estado na unidade Watch8 não foi confirmado. Repetir o ajuste nativo não comprova
+economia adicional. [Samsung][health-saving], [análise do firmware](wearos-profundo.md).
+
+Também investigar um **limite de processos em cache**, inclusive zero, como teste separado.
+No AOSP consultado, `ActivityManagerService.setProcessLimit()` exige `SET_PROCESS_LIMIT`,
+declarada pelo pacote Shell, e altera o limite de cache. É um caminho potencial via Shizuku,
+sem equivaler a desligar todos os serviços de segundo plano. “Não manter atividades” também
+atua sobre atividades, sem representar esse bloqueio geral. Nenhuma dessas alterações foi
+executada no AVD ou no Watch8 nesta etapa. [Activity Manager][am], [limites][am-constants],
+[manifesto Shell][shell-manifest]
+
+Antes de qualquer limite: guardar o valor original, verificar aplicação por API/estado
+independente, comparar CPU/despertares e reinicializações, testar o alarme e restaurar ao
+valor anterior. Só oferecer o controle se houver benefício observado. A prioridade continua
+ser impedir trabalho dispensável, com acionamento manual e sem um monitor permanente.
+
+O próximo cliente de leitura deve distinguir tarefa recente, processo em cache/congelado,
+serviço ativo e contadores acumulados por UID. Identificar os pacotes reais antes da coleta
+direcionada; nomes de apps não serão convertidos em uma lista presumida de packages.
+Atividade atribuída a UID compartilhado não identifica sozinha qual app causou o consumo.
+
 ## Revisão de execução do próximo incremento
 
 Aplicada a revisão de execução já usada no projeto. Achados antes de implementar:
@@ -134,3 +182,10 @@ revisados; autorização do cliente, Samsung, alarmes e autonomia permanecem pen
 [boot]: https://github.com/RikkaApps/Shizuku/blob/b844bc491f1790c72328e1a8e5b2349f8978f0ea/manager/src/main/java/moe/shizuku/manager/receiver/BootCompleteReceiver.kt
 [constants]: https://github.com/RikkaApps/Shizuku/blob/b844bc491f1790c72328e1a8e5b2349f8978f0ea/server/src/main/java/rikka/shizuku/server/ServerConstants.java
 [setup]: https://shizuku.rikka.app/guide/setup/
+[recents]: https://developer.android.com/guide/components/activities/recents
+[freezer-doc]: https://source.android.com/docs/core/perf/cached-apps-freezer
+[gemini]: https://support.google.com/gemini/answer/16401122
+[health-saving]: https://www.samsung.com/ae/support/mobile-devices/how-to-extend-battery-life-and-use-power-saving-modes-on-watch7-and-watch-ultra/
+[am]: https://github.com/aosp-mirror/platform_frameworks_base/blob/99b01a65cc4c104933788b3143285ab6bae65827/services/core/java/com/android/server/am/ActivityManagerService.java
+[am-constants]: https://github.com/aosp-mirror/platform_frameworks_base/blob/99b01a65cc4c104933788b3143285ab6bae65827/services/core/java/com/android/server/am/ActivityManagerConstants.java
+[shell-manifest]: https://github.com/aosp-mirror/platform_frameworks_base/blob/99b01a65cc4c104933788b3143285ab6bae65827/packages/Shell/AndroidManifest.xml
