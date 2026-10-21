@@ -93,6 +93,8 @@ Ajuste após a primeira execução: a imagem Wear OS 5 declara `config_batterySa
 
 Etapa concluída em **21/10/2026**: módulo `:lab` isolado, prova de localização global observada e restaurada no AVD, bloqueio após revogação e recuperação após morte real do processo. Build/lint do laboratório sem erros/avisos e 23 testes JVM do app aprovados. [Auditoria em três rodadas](../auditorias/2026-10-19-laboratorio.md) aprovada para o laboratório; [evidências por controle](../evidencias/2026-10-19-controles/README.md). Economia/política AOSP não validadas na imagem; Samsung e autonomia continuam pendentes. Não houve alteração no APK publicado. O próximo passo específico Samsung é descoberta no Watch8 quando disponível, antes de novas telas de perfil ou automação de “Só relógio”.
 
+Publicação: commit `3387f646ca08d740fa905114a6f5a631c03acf5b`, com [CI aprovada nos dois jobs](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39615004887). O laboratório e o roteiro estão no GitHub; não há nova release do app de usuário nesta etapa.
+
 Para “Só relógio”, priorizar a descoberta da tela nativa quando o Watch8 estiver disponível. Automação por acessibilidade e comando Samsung direto permanecem alternativas posteriores, sem ativação presumida. Não manter serviço de acessibilidade ou depuração no relógio apenas para sustentar um atalho ainda não comprovado.
 
 ## Estudo do Flashpay em 19/10/2026

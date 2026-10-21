@@ -37,6 +37,7 @@ Validação final conferida em **21/10/2026**:
 - Serial inválido e combinação de modos incompatíveis recusados pelo roteiro antes da execução.
 - Hashes dos dois APKs conferidos contra a evidência. Nenhuma alteração no diretório `app`; laboratório sem variante release, launcher, rede ou serviços. Dados da sessão excluídos de backup/transferência.
 - `actionlint`, sintaxe dos roteiros, `git diff --check`, UTF-8 e links locais aprovados. Listagem de tarefas confirmou ausência de release no lab; permissões conferidas nos dois APKs, sem permissão avançada no app principal.
+- [CI do commit publicado](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39615004887) aprovada nos dois jobs. Instrumentação compilada na CI e executada localmente; avisos de manutenção das actions não impediram os checks.
 - [Resultados e saídas revisadas](../evidencias/2026-10-19-controles/README.md) preservados no repositório. Nenhum dispositivo permanece conectado ao ADB na conferência final.
 
 **APROVADO para laboratório exclusivo do AVD**, após três rodadas, sem achados bloqueantes ou altos remanescentes. Os achados altos de verificação após reset e capacidade da imagem foram corrigidos. Não é aprovação de controles para Watch8 nem de ganho de autonomia.

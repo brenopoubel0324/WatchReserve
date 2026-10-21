@@ -118,7 +118,14 @@ Resultado: localização global alterada e restaurada pelo UID comum do APK, com
 
 Economia por `low_power` e política `battery_saver_constants` **não foram validadas**: a imagem Wear OS 5/API 34 informa mecanismo AOSP desativado. Escrita aceita/relida não resultou em estado efetivo reconhecido pelas APIs. Os relatórios mantêm essa distinção; nenhum benefício Samsung ou ganho de autonomia é declarado.
 
-Build debug/androidTest e lint do laboratório aprovados, zero erros e avisos. Os 23 testes JVM e lint do app continuam aprovados (zero erros/doze avisos de atualização). [Autoauditoria](auditorias/2026-10-19-laboratorio.md) concluída em três rodadas, sem achados bloqueantes ou altos remanescentes. [Evidências e hashes dos APKs](evidencias/2026-10-19-controles/README.md) revisados, sem dados privados. Publicação e CI desta etapa serão registradas após conclusão.
+Build debug/androidTest e lint do laboratório aprovados, zero erros e avisos. Os 23 testes JVM e lint do app continuam aprovados (zero erros/doze avisos de atualização). [Autoauditoria](auditorias/2026-10-19-laboratorio.md) concluída em três rodadas, sem achados bloqueantes ou altos remanescentes. [Evidências e hashes dos APKs](evidencias/2026-10-19-controles/README.md) revisados, sem dados privados.
+
+- Código e evidências publicados no commit `3387f646ca08d740fa905114a6f5a631c03acf5b`.
+- [CI do laboratório](https://github.com/brenopoubel0324/WatchReserve/actions/runs/39615004887): **aprovada nos dois jobs**, com build/lint/JVM do app, build/lint e compilação da instrumentação do lab, além do diagnóstico PowerShell 7/5.1 e sintaxe dos roteiros. As execuções instrumentadas ocorreram no AVD local.
+- Nenhuma nova release do app de usuário: a v0.2.1 continua sendo a prévia publicada e não solicita permissões de escrita.
+- Avisos de manutenção das versões fixadas das actions e do runner foram emitidos pela CI, sem impedir os checks. Atualização dessas ferramentas fica como manutenção separada.
+
+Bug sweep final: contratos, isolamento dos módulos, permissões dos APKs, status Git, links, evidências e CI revisados. Sem achados bloqueantes ou altos; validação física Samsung e autonomia permanecem pendentes.
 
 ## Próxima evidência necessária
 
