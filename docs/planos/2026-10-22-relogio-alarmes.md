@@ -285,6 +285,21 @@ desabilitar integração. Só então remover a ponte ou retornar à versão ante
 fazer downgrade com diário incompatível ou estado ainda aplicado. Atualizar evidências por
 modelo/firmware; compatibilidade de outros Samsung Wear OS será por capacidade e prova própria.
 
+### Funcionalidade complementar — pressão longa em Voltar
+
+Pedido acrescentado em 22/10/2026: permitir reutilizar o gesto hoje associado ao Samsung Pay.
+A [pesquisa e comparação de soluções](../referencias/remapeamento-botao-voltar.md) recomenda
+testar primeiro Wear Button Remapper, sucessor do SPayRemap. Não depende do Shevery para
+receber teclas. Não instalar ou desativar pacotes como parte automática da preparação da ponte.
+
+Se a solução pronta atender ao uso e ao consumo, manter integração por atalho/documentação.
+Considerar implementação própria somente se houver vantagem concreta: ações internas,
+configuração mais simples ou permissões/custo menores. Seria recurso opcional por eventos,
+desativado inicialmente, com teste físico e restauração independente. Preservar toque curto,
+alarme, Home e confirmação Samsung; não usar leitura contínua de logs. Registrar o serviço
+adicional no protocolo de autonomia. Essa investigação não substitui nem bloqueia os quatro
+portões do modo Relógio + alarmes, cuja implementação permanece pendente.
+
 ## Critérios de Aceite
 
 - [x] Estado publicado e limites conhecidos registrados; atalhos existentes preservados no plano.

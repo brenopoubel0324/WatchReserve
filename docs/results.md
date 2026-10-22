@@ -243,6 +243,23 @@ Entrega apenas documental: UTF-8, links, estrutura, diff e bug sweep revisados. 
 Android não repetidos, pois código e configuração não mudaram. Sem instalação/permissão nova,
 conexão ao relógio, controle implementado, APK ou release. Ganho de autonomia permanece não medido.
 
+### Remapeamento de Voltar — pesquisa em 22/10/2026
+
+Identificados SPayRemap e seu sucessor Wear Button Remapper, com recomendação de testar
+a solução pronta antes de duplicá-la. [Pesquisa, fontes, alternativas e roteiro](referencias/remapeamento-botao-voltar.md).
+APK Freepoc 1.06 obtido por HTTPS e examinado com aapt2/apksigner: assinatura válida,
+acessibilidade com acesso a conteúdo de janelas e `WAKE_LOCK` declarado. Não quantifica
+consumo nem prova aquisição de wake lock. Artefato mantido fora do Git, sem instalação.
+
+Fonte pública pc386 demonstra abordagem por eventos de teclas; a versão consultada tem
+destino fixo Google Wallet. GW4Remap antigo acompanha logcat e está sem manutenção pelo autor.
+Não incorporar código desses candidatos. Integração própria, se necessária, será opcional,
+sem dependência da ponte para teclas, com restauração e medição separadas do perfil econômico.
+
+Somente documentação do WatchReserve alterada; build/lint/testes Android não repetidos.
+Bug sweep de fontes, permissões, contratos, links e diff sem bloqueios documentais. Compatibilidade,
+uso com tela apagada/economia Samsung e custo de bateria dos remapeadores continuam pendentes.
+
 ### Continuação física
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
