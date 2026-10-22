@@ -50,6 +50,19 @@ class BridgeEmulatorTest {
             assertEquals(2, summary.getJSONArray("queries").length())
             assertNotNull(zip.getEntry("power.txt"))
             assertNotNull(zip.getEntry("processes.txt"))
+            val queries = summary.getJSONArray("queries")
+            for (index in 0 until queries.length()) assertEquals("ok", queries.getJSONObject(index).getString("status"))
+            val power = zip.getInputStream(zip.getEntry("power.txt")).bufferedReader().use { it.readText() }
+            val processes = zip.getInputStream(zip.getEntry("processes.txt")).bufferedReader().use { it.readText() }
+            assertTrue("A leitura de energia deve conter campos reais do PowerManager.", power.contains("mWakefulness="))
+            assertTrue("A leitura de processos deve conter processos reais do AVD.", processes.contains("ProcessRecord{"))
+            assertEquals(Build.MODEL, summary.getString("model"))
+            assertEquals(Build.VERSION.INCREMENTAL, summary.getString("firmware"))
+            assertTrue(summary.getLong("startedAtEpochMillis") > 0)
+            assertTrue(summary.getLong("finishedAtEpochMillis") > 0)
+            assertTrue(summary.getLong("elapsedMillis") >= 0)
+            summary.getBoolean("powerSaveAtStart")
+            assertEquals(summary.getBoolean("powerSave"), summary.getBoolean("powerSaveAtEnd"))
         }
         assertTrue(report.canonicalPath.startsWith(compose.activity.noBackupFilesDir.canonicalPath + File.separator))
         compose.onNodeWithText("Exportar relatório").performScrollTo().assertIsDisplayed()

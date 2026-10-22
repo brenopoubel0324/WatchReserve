@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.os.Process
 import android.os.PowerManager
+import android.os.SystemClock
 import androidx.annotation.Keep
 import dev.brenopoubel.watchreserve.advancedlab.IReadOnlyService
 import dev.brenopoubel.watchreserve.advancedlab.core.ProcessCapture
@@ -36,30 +37,33 @@ class ReadOnlyService @Keep constructor(private val context: Context) : IReadOnl
     override fun collect(queryIds: Array<String>, destination: ParcelFileDescriptor): String {
         checkCaller()
         val queries = ReadQuery.resolve(queryIds)
+        val startedAt = System.currentTimeMillis()
+        val startedElapsed = SystemClock.elapsedRealtime()
+        val powerSaveAtStart = context.getSystemService(PowerManager::class.java).isPowerSaveMode
         val results = JSONArray()
-        destination.use { descriptor ->
+        return destination.use { descriptor ->
             ZipOutputStream(ParcelFileDescriptor.AutoCloseOutputStream(descriptor)).use { zip ->
                 for (query in queries) {
                     zip.putNextEntry(ZipEntry("${query.name.lowercase()}.txt"))
-                    val result = try {
-                        val captured = ProcessCapture().run(query.arguments, zip)
-                        JSONObject().put("query", query.name).put("status", captured.status)
-                            .put("exitCode", captured.exitCode ?: JSONObject.NULL).put("bytes", captured.bytes)
-                            .put("durationMillis", captured.durationMillis)
-                    } catch (failure: java.io.IOException) {
-                        // Falha do arquivo aborta a coleta em vez de produzir um ZIP falsamente completo.
-                        throw failure
-                    }
+                    val captured = ProcessCapture().run(query.arguments, zip)
+                    val result = JSONObject().put("query", query.name).put("status", captured.status)
+                        .put("exitCode", captured.exitCode ?: JSONObject.NULL).put("bytes", captured.bytes)
+                        .put("durationMillis", captured.durationMillis)
                     zip.closeEntry()
                     results.put(result)
                 }
                 val metadata = JSONObject(identity()).put("schema", 1).put("queries", results)
+                    .put("model", Build.MODEL).put("firmware", Build.VERSION.INCREMENTAL)
+                    .put("startedAtEpochMillis", startedAt).put("finishedAtEpochMillis", System.currentTimeMillis())
+                    .put("elapsedMillis", SystemClock.elapsedRealtime() - startedElapsed)
+                    .put("powerSaveAtStart", powerSaveAtStart)
+                metadata.put("powerSaveAtEnd", metadata.getBoolean("powerSave"))
                 zip.putNextEntry(ZipEntry("summary.json"))
                 zip.write(metadata.toString(2).toByteArray(Charsets.UTF_8))
                 zip.closeEntry()
+                metadata.toString()
             }
         }
-        return JSONObject(identity()).put("queries", results).toString()
     }
 
     override fun destroy() {

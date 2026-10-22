@@ -1,7 +1,6 @@
 package dev.brenopoubel.watchreserve.advancedlab.core
 
 import java.io.IOException
-import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -23,7 +22,7 @@ class ProcessCapture(private val timeoutMillis: Long = 10_000, private val maxBy
         require(timeoutMillis > 0 && maxBytes > 0)
         val start = System.nanoTime()
         val process = ProcessBuilder(arguments).redirectErrorStream(true).start()
-        val prefix = ByteArrayOutputStream()
+        val scanner = OutputStatusScanner()
         val reader = Executors.newSingleThreadExecutor { task -> Thread(task, "diagnostic-output").apply { isDaemon = true } }
         val draining = reader.submit<Long> {
             var received = 0L
@@ -32,8 +31,7 @@ class ProcessCapture(private val timeoutMillis: Long = 10_000, private val maxBy
                 while (true) {
                     val size = input.read(buffer)
                     if (size < 0) break
-                    val prefixRemaining = 8192 - prefix.size()
-                    if (prefixRemaining > 0) prefix.write(buffer, 0, minOf(size, prefixRemaining))
+                    scanner.accept(buffer, size)
                     val remaining = (maxBytes - received).coerceAtLeast(0)
                     if (remaining > 0) output.write(buffer, 0, minOf(size.toLong(), remaining).toInt())
                     received += size
@@ -49,14 +47,8 @@ class ProcessCapture(private val timeoutMillis: Long = 10_000, private val maxBy
             }
             val bytes = try { draining.get(1, TimeUnit.SECONDS) }
             catch (failure: Exception) { throw IOException("Saída incompleta da consulta.", failure) }
-            val text = prefix.toString("UTF-8")
-            val failure = when {
-                Regex("(?im)^\\s*(permission denial:|permission denied|.*requires.*permission.*denied)").containsMatchIn(text) -> "permission_denied"
-                Regex("(?im)^\\s*(can't find service:|error dumping service info:)").containsMatchIn(text) -> "service_unavailable"
-                else -> null
-            }
-            return CaptureResult(if (exited) process.exitValue() else null, !exited, bytes > maxBytes,
-                bytes, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start), failure)
+            return CaptureResult(if (exited) process.exitValue() else null, !exited || scanner.timedOut, bytes > maxBytes,
+                bytes, TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start), scanner.failure)
         } finally {
             process.destroyForcibly()
             process.inputStream.close()
@@ -65,5 +57,29 @@ class ProcessCapture(private val timeoutMillis: Long = 10_000, private val maxBy
             draining.cancel(true)
             reader.shutdownNow()
         }
+    }
+}
+
+/** Examina também a saída descartada e conserva só uma cauda para marcadores entre blocos. */
+internal class OutputStatusScanner {
+    private var tail = ""
+    var timedOut = false
+        private set
+    var failure: String? = null
+        private set
+
+    fun accept(bytes: ByteArray, size: Int) {
+        // Os marcadores são ASCII; a conversão de um byte por caractere preserva suas fronteiras.
+        val window = tail + String(bytes, 0, size, Charsets.ISO_8859_1)
+        if (dumpTimeout.containsMatchIn(window)) timedOut = true
+        if (permissionDenied.containsMatchIn(window)) failure = "permission_denied"
+        else if (failure == null && unavailable.containsMatchIn(window)) failure = "service_unavailable"
+        tail = window.takeLast(1024)
+    }
+
+    companion object {
+        private val dumpTimeout = Regex("(?im)^[ \\t]*\\*\\*\\* SERVICE [^\\r\\n]*\\bDUMP TIMEOUT\\b")
+        private val permissionDenied = Regex("(?im)^[ \\t]*(permission denial:|permission denied|.*requires.*permission.*denied)")
+        private val unavailable = Regex("(?im)^[ \\t]*(can't find service:|error dumping service info:)")
     }
 }

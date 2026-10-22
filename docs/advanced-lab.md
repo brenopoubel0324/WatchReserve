@@ -45,7 +45,14 @@ Cada consulta tem limite de dez segundos e armazena até 1 MiB, drenando stdout 
 stderr juntos. O ZIP inclui um resumo por consulta: duração, bytes recebidos,
 código de saída e estados como `ok`, `timeout`, `permission_denied`,
 `service_unavailable`, `command_failed` ou `truncated`. Uma falha na gravação
-aborta o arquivo. Não usa `batterystats --reset` nem `--checkin`.
+aborta o arquivo. A classificação examina também a saída descartada pelo limite
+de arquivo e reconhece o timeout interno do `dumpsys`, mesmo com código de saída
+zero. Não usa `batterystats --reset` nem `--checkin`.
+
+O resumo privado registra modelo, firmware, início/fim da coleta, duração monotônica
+e o indicador público de economia no início e no fim. Esses dois indicadores não
+demonstram que a política permaneceu constante durante toda a coleta nem descrevem
+todas as restrições próprias da Samsung.
 
 `ok` significa que a consulta terminou, não ausência de consumo. Um valor `null`
 de uma chave não prova que a função esteja desligada. Serviço ausente, permissão
@@ -99,6 +106,8 @@ As capturas e resultados são gravados fora do repositório.
 
 A instrumentação cobre leitura rápida/completa por shell, isolamento do cliente
 comum, cancelamento durante conexão, recriação da tela e encerramento do helper.
+Na leitura rápida, exige também campos reais de energia/processos e status `ok`
+das consultas principais; um ZIP contendo só erros não aprova essa prova.
 Ela não comprova sensores Samsung, alarmes físicos, autonomia, comportamento após
 reboot ou compatibilidade do gerenciador em outros firmwares. A CI compila a
 instrumentação e roda testes JVM/lint; a integração exige o AVD local.

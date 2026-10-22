@@ -43,6 +43,38 @@ class ProcessCaptureTest {
         val result = ProcessCapture().run(fixture("missing"), ByteArrayOutputStream())
         assertEquals("service_unavailable", result.status)
     }
+
+    @Test fun recognizesDumpsysTimeoutEvenAfterLargeOutputAndSuccessfulExit() {
+        val result = ProcessCapture().run(fixture("dump-timeout"), ByteArrayOutputStream())
+        assertEquals(0, result.exitCode)
+        assertEquals("timeout", result.status)
+        assertTrue(result.timedOut)
+        assertFalse(result.truncated)
+    }
+
+    @Test fun recognizesLatePermissionDenialBeyondStoredOutputLimit() {
+        val result = ProcessCapture(maxBytes = 1024).run(fixture("late-denied"), ByteArrayOutputStream())
+        assertTrue(result.truncated)
+        assertEquals("permission_denied", result.status)
+    }
+
+    @Test fun keepsSuccessfulOutputContainingOrdinaryTimeoutConfigurationValid() {
+        val result = ProcessCapture().run(fixture("timeout-config"), ByteArrayOutputStream())
+        assertEquals("ok", result.status)
+        assertFalse(result.timedOut)
+    }
+
+    @Test fun detectsTimeoutAcrossEveryPossibleReadBoundary() {
+        val marker = "\n*** SERVICE 'power' DUMP TIMEOUT (10000ms) EXPIRED ***\n".toByteArray()
+        for (split in 1 until marker.size) {
+            val scanner = OutputStatusScanner()
+            val first = marker.copyOfRange(0, split)
+            val second = marker.copyOfRange(split, marker.size)
+            scanner.accept(first, first.size)
+            scanner.accept(second, second.size)
+            assertTrue("Marcador dividido no byte $split.", scanner.timedOut)
+        }
+    }
 }
 
 object CaptureFixture {
@@ -53,6 +85,18 @@ object CaptureFixture {
             "fail" -> kotlin.system.exitProcess(7)
             "denied" -> println("Permission Denial: can't dump power without android.permission.DUMP")
             "missing" -> println("Can't find service: absent")
+            "dump-timeout" -> {
+                repeat(3) { System.out.write(ByteArray(8192) { 65 }) }
+                print("\n*** SERVICE 'power' DUMP TIME")
+                System.out.flush()
+                Thread.sleep(50)
+                println("OUT (10000ms) EXPIRED ***")
+            }
+            "late-denied" -> {
+                repeat(3) { System.out.write(ByteArray(8192) { 65 }) }
+                println("\nPermission Denial: can't dump power without android.permission.DUMP")
+            }
+            "timeout-config" -> println("mTimeout=10000\nlastTimeoutMillis=0")
         }
     }
 }
