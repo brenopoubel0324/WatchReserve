@@ -61,6 +61,11 @@ Os testes usam uma pasta temporária exclusiva e isolam `LOCALAPPDATA` somente n
 
 O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. Ele usa a chave de debug e não deve ser confundido com uma release assinada pela chave persistente do projeto.
 
+O módulo separado [`:advancedLab`](docs/advanced-lab.md) permite investigar atividade
+residual por uma ponte shell local. A leitura foi comprovada no emulador; a autorização
+original do Shevery ainda exige adaptação para a tela Wear. Esse APK não congela apps,
+não aplica perfis e não integra a release do app principal.
+
 ## Documentação e validação
 
 - [Próximo marco: Relógio + alarmes, com economia avançada](docs/planos/2026-10-22-relogio-alarmes.md).
