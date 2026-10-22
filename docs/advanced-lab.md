@@ -20,6 +20,7 @@ verificados no código:
 
 | Gerenciador | Build admitido |
 |---|---|
+| WatchReserve Bridge | `dev.brenopoubel.watchreserve.bridge`, 0.1-wear-readonly, código 1 |
 | Shevery | `com.hamondev.shevery`, 14.4.0, código 44 |
 | Shizuku original | `moe.shizuku.privileged.api`, 13.6.0.r1086.2650830c, código 1086 |
 
@@ -33,6 +34,17 @@ protocolo exigiu ampliar temporariamente a tela do emulador, depois restaurá-la
 Isso não comprova uma autorização utilizável no Galaxy Watch nem qualifica os
 serviços, atualizações automáticas ou mecanismos de recuperação do gerenciador.
 O APK original não é uma ponte Wear adaptada.
+
+A [ponte WatchReserve](https://github.com/brenopoubel0324/WatchReserve-Bridge)
+usa um módulo Wear separado, com confirmação rolável e assinatura independente.
+Exclui os serviços de telefone, watchdog, supervisor nativo, autoatualização e grant
+automático de `WRITE_SECURE_SETTINGS`. A permissão e o protocolo legados do SDK são
+preservados; provider e destino de autorização apontam para a nova identidade.
+Esta versão ainda parte pelo PC/ADB, sem recuperação após boot ou controles de economia.
+O cliente exige o certificado SHA-256
+`db38593b18806c7403cc7c2950848d2ad6296c3d7010d35f58d80c37b8e1f228`.
+A ponte também valida pacote, versão e certificado do APK de desenvolvimento Lab.
+Builds CI com outra chave debug não compõem esse par qualificado.
 
 ## O que a coleta faz
 

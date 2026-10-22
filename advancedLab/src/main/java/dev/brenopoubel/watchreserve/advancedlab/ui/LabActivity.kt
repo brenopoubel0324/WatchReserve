@@ -51,7 +51,7 @@ class LabActivity : ComponentActivity() {
                 val focus = remember { FocusRequester() }
                 val scope = rememberCoroutineScope()
                 LaunchedEffect(Unit) { focus.requestFocus() }
-                LaunchedEffect(state.message) { if (state.message.isNotBlank()) scroll.animateScrollTo(0) }
+                LaunchedEffect(state.status, state.message) { scroll.animateScrollTo(0) }
                 Column(Modifier.fillMaxSize().background(Color.Black)
                     .onRotaryScrollEvent { event -> scope.launch { scroll.scrollBy(event.verticalScrollPixels) }; true }
                     .focusRequester(focus).focusable().verticalScroll(scroll)

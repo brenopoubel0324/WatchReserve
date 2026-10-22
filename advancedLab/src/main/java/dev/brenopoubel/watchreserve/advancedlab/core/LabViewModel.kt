@@ -77,7 +77,7 @@ class LabViewModel(application: Application) : AndroidViewModel(application) {
                 BridgeIdentity(name, hash, info.longVersionCode, info.versionName.orEmpty())
             } catch (_: PackageManager.NameNotFoundException) { null }
         }
-        require(candidates.isNotEmpty()) { "Instale e inicie Shevery neste relógio." }
+        require(candidates.isNotEmpty()) { "Instale e inicie uma ponte qualificada neste relógio." }
         return BridgeTrust.validate(candidates)
     }
 
@@ -89,7 +89,11 @@ class LabViewModel(application: Application) : AndroidViewModel(application) {
         }
         try {
             val manager = trustedManager()
-            val label = if (manager.packageName == BridgeTrust.SHEVERY) "Shevery" else "Shizuku"
+            val label = when (manager.packageName) {
+                BridgeTrust.WATCHRESERVE -> "WatchReserve Bridge"
+                BridgeTrust.SHEVERY -> "Shevery"
+                else -> "Shizuku"
+            }
             if (!Shizuku.pingBinder()) {
                 state = state.copy(status = "$label instalado; ponte não iniciada.", canAuthorize = false, canCollect = false)
             } else if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
