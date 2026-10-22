@@ -16,7 +16,7 @@ object BridgeTrust {
         require(candidates.size == 1) { "Use apenas uma ponte conhecida neste laboratório." }
         val candidate = candidates.single()
         require(certificates[candidate.packageName] == candidate.certificate.lowercase()) { "Certificado da ponte não reconhecido." }
-        require((candidate.packageName == WATCHRESERVE && candidate.versionCode == 1L && candidate.versionName == "0.1-wear-readonly") ||
+        require((candidate.packageName == WATCHRESERVE && candidate.versionCode == 2L && candidate.versionName == "0.2-wear-readonly") ||
             (candidate.packageName == SHEVERY && candidate.versionCode == 44L && candidate.versionName == "14.4.0") ||
             (candidate.packageName == SHIZUKU && candidate.versionCode == 1086L &&
                 candidate.versionName == "13.6.0.r1086.2650830c")) {

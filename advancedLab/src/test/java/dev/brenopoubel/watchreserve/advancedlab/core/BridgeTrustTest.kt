@@ -26,9 +26,9 @@ class BridgeTrustTest {
     }
     @Test fun wearBridgeRequiresExactCertificateAndBuild() {
         val wear = BridgeIdentity(BridgeTrust.WATCHRESERVE,
-            "db38593b18806c7403cc7c2950848d2ad6296c3d7010d35f58d80c37b8e1f228", 1, "0.1-wear-readonly")
+            "db38593b18806c7403cc7c2950848d2ad6296c3d7010d35f58d80c37b8e1f228", 2, "0.2-wear-readonly")
         assertEquals(wear, BridgeTrust.validate(listOf(wear)))
-        for (candidate in listOf(wear.copy(certificate = shevery.certificate), wear.copy(versionCode = 2),
+        for (candidate in listOf(wear.copy(certificate = shevery.certificate), wear.copy(versionCode = 1),
             wear.copy(versionName = "0.1-other"))) {
             assertThrows(IllegalArgumentException::class.java) { BridgeTrust.validate(listOf(candidate)) }
         }

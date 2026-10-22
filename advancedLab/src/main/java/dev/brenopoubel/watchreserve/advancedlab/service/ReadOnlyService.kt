@@ -11,6 +11,8 @@ import androidx.annotation.Keep
 import dev.brenopoubel.watchreserve.advancedlab.IReadOnlyService
 import dev.brenopoubel.watchreserve.advancedlab.core.ProcessCapture
 import dev.brenopoubel.watchreserve.advancedlab.core.ReadQuery
+import dev.brenopoubel.watchreserve.advancedlab.core.ReadSession
+import java.util.UUID
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.zip.ZipEntry
@@ -34,25 +36,35 @@ class ReadOnlyService @Keep constructor(private val context: Context) : IReadOnl
     }
 
     @Synchronized
-    override fun collect(queryIds: Array<String>, destination: ParcelFileDescriptor): String {
+    override fun collect(queryIds: Array<String>, destination: ParcelFileDescriptor, sessionId: String, deadlineElapsed: Long): String {
         checkCaller()
+        require(UUID.fromString(sessionId).toString() == sessionId) { "Identificação de coleta inválida." }
         val queries = ReadQuery.resolve(queryIds)
         val startedAt = System.currentTimeMillis()
         val startedElapsed = SystemClock.elapsedRealtime()
+        require(deadlineElapsed > startedElapsed && deadlineElapsed - startedElapsed <= ReadSession.MAX_DURATION_MILLIS) {
+            "Prazo da coleta inválido ou vencido."
+        }
         val powerSaveAtStart = context.getSystemService(PowerManager::class.java).isPowerSaveMode
         val results = JSONArray()
         return destination.use { descriptor ->
             ZipOutputStream(ParcelFileDescriptor.AutoCloseOutputStream(descriptor)).use { zip ->
                 for (query in queries) {
                     zip.putNextEntry(ZipEntry("${query.name.lowercase()}.txt"))
-                    val captured = ProcessCapture().run(query.arguments, zip)
-                    val result = JSONObject().put("query", query.name).put("status", captured.status)
-                        .put("exitCode", captured.exitCode ?: JSONObject.NULL).put("bytes", captured.bytes)
-                        .put("durationMillis", captured.durationMillis)
+                    val remaining = deadlineElapsed - SystemClock.elapsedRealtime()
+                    val result = if (remaining > 0) {
+                        val captured = ProcessCapture(timeoutMillis = minOf(10_000L, remaining)).run(query.arguments, zip)
+                        JSONObject().put("query", query.name).put("status", captured.status)
+                            .put("exitCode", captured.exitCode ?: JSONObject.NULL).put("bytes", captured.bytes)
+                            .put("durationMillis", captured.durationMillis)
+                    } else JSONObject().put("query", query.name).put("status", "not_run_deadline")
+                        .put("exitCode", JSONObject.NULL).put("bytes", 0).put("durationMillis", 0)
                     zip.closeEntry()
                     results.put(result)
                 }
-                val metadata = JSONObject(identity()).put("schema", 1).put("queries", results)
+                val metadata = JSONObject(identity()).put("schema", 2).put("queries", results)
+                    .put("sessionId", sessionId).put("deadlineElapsed", deadlineElapsed)
+                    .put("deadlineExceeded", SystemClock.elapsedRealtime() >= deadlineElapsed)
                     .put("model", Build.MODEL).put("firmware", Build.VERSION.INCREMENTAL)
                     .put("startedAtEpochMillis", startedAt).put("finishedAtEpochMillis", System.currentTimeMillis())
                     .put("elapsedMillis", SystemClock.elapsedRealtime() - startedElapsed)

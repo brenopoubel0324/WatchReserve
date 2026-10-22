@@ -12,8 +12,8 @@ android {
         applicationId = "dev.brenopoubel.watchreserve.advancedlab"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1-readonly"
+        versionCode = 2
+        versionName = "0.2-readonly-sessions"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {

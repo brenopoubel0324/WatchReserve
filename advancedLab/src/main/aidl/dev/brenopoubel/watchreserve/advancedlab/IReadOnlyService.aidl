@@ -5,5 +5,5 @@ import android.os.ParcelFileDescriptor;
 interface IReadOnlyService {
     void destroy() = 16777114;
     String identity() = 1;
-    String collect(in String[] queryIds, in ParcelFileDescriptor destination) = 2;
+    String collect(in String[] queryIds, in ParcelFileDescriptor destination, String sessionId, long deadlineElapsed) = 2;
 }

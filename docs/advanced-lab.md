@@ -20,7 +20,7 @@ verificados no código:
 
 | Gerenciador | Build admitido |
 |---|---|
-| WatchReserve Bridge | `dev.brenopoubel.watchreserve.bridge`, 0.1-wear-readonly, código 1 |
+| WatchReserve Bridge | `dev.brenopoubel.watchreserve.bridge`, 0.2-wear-readonly, código 2 |
 | Shevery | `com.hamondev.shevery`, 14.4.0, código 44 |
 | Shizuku original | `moe.shizuku.privileged.api`, 13.6.0.r1086.2650830c, código 1086 |
 
@@ -76,6 +76,34 @@ cancelar. Cada operação tem uma identificação própria, para isolar resposta
 atrasadas de coletas canceladas. `daemon(false)` permite à ponte encerrá-lo se o
 cliente morrer. O processo principal da ponte pode continuar residente: o teste
 de encerramento do helper não mede nem elimina o custo do gerenciador.
+
+## Sessão preparada para coleta local
+
+No laboratório 0.2-readonly-sessions (código 2), **Preparar sessão offline** salva
+uma receita privada de diagnóstico completo. Depois de ajustar a economia desejada,
+abra o painel e toque em **Executar sessão**. O app conecta e valida o helper shell,
+aguarda cinco segundos e executa as consultas localmente. A coleta dispensa a
+continuidade da conexão ADB do PC; a ponte precisa estar iniciada e autorizada.
+
+A receita fica vinculada ao dispositivo, firmware, reinício, UID e versões e
+assinaturas do cliente/ponte. Mudanças invalidam sua execução. Preparar não inicia
+consultas nem agenda trabalho no fundo. A execução é manual, com prazo total de
+três minutos, cancelamento e tela temporariamente acesa enquanto o painel coleta.
+Essas operações de diagnóstico devem ficar fora das janelas de autonomia.
+
+O registro `noBackupFilesDir/read-session.properties` usa gravação atômica e
+identifica fases e resultado. Ao reabrir depois de morrer durante uma coleta, o
+app registra a interrupção e não retoma automaticamente. Um registro ilegível
+bloqueia novas operações até **Descartar registro**. Esse registro é exclusivo de
+leitura; os diários de restauração dos futuros controles ainda não estão disponíveis.
+O identificador do dispositivo permanece local e não é incluído no ZIP.
+
+O resumo do ZIP tem schema 2 e inclui identificação da sessão e prazo monotônico.
+Consultas não iniciadas por prazo esgotado recebem `not_run_deadline`, sem indicar
+consumo zero. Se o helper concluir um ZIP parcial válido, ele pode ser exportado.
+Cancelamento ou falha que impeça finalizar o ZIP descarta o arquivo incompleto e
+conserva o resultado no registro da sessão. Isso não recupera configurações ou
+reinicia a ponte depois do boot.
 
 ## Privacidade e recuperação
 

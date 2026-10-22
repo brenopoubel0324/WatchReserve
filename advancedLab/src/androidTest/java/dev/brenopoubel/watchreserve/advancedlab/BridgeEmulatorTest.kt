@@ -16,6 +16,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.brenopoubel.watchreserve.advancedlab.core.LabViewModel
 import dev.brenopoubel.watchreserve.advancedlab.core.ReadQuery
+import dev.brenopoubel.watchreserve.advancedlab.core.ReadPhase
+import dev.brenopoubel.watchreserve.advancedlab.core.ReadSessionStore
 import dev.brenopoubel.watchreserve.advancedlab.service.ReadOnlyService
 import dev.brenopoubel.watchreserve.advancedlab.ui.LabActivity
 import org.json.JSONObject
@@ -47,6 +49,10 @@ class BridgeEmulatorTest {
             val summary = JSONObject(zip.getInputStream(zip.getEntry("summary.json")).bufferedReader().use { it.readText() })
             assertEquals(2000, summary.getInt("uid"))
             assertEquals(Process.myUid(), summary.getInt("ownerUid"))
+            val session = checkNotNull(ReadSessionStore(compose.activity).load())
+            assertEquals(ReadPhase.COMPLETED, session.phase)
+            assertEquals(session.id, summary.getString("sessionId"))
+            assertEquals(session.deadlineElapsed, summary.getLong("deadlineElapsed"))
             assertEquals(2, summary.getJSONArray("queries").length())
             assertNotNull(zip.getEntry("power.txt"))
             assertNotNull(zip.getEntry("processes.txt"))

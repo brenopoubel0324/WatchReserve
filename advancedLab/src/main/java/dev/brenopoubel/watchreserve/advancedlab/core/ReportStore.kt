@@ -8,7 +8,10 @@ class ReportStore(context: Context) {
     private val directory = File(context.noBackupFilesDir, "diagnostics").apply {
         check(isDirectory || mkdirs()) { "Armazenamento privado indisponível." }
     }
-    fun pending(): File = File(directory, "report-${UUID.randomUUID()}.pending")
+    fun pending(id: String = UUID.randomUUID().toString()): File {
+        require(UUID.fromString(id).toString() == id)
+        return File(directory, "report-$id.pending")
+    }
     fun complete(pending: File): File {
         require(pending.parentFile == directory && pending.extension == "pending")
         val destination = File(directory, pending.nameWithoutExtension + ".zip")
