@@ -260,6 +260,23 @@ Somente documentação do WatchReserve alterada; build/lint/testes Android não 
 Bug sweep de fontes, permissões, contratos, links e diff sem bloqueios documentais. Compatibilidade,
 uso com tela apagada/economia Samsung e custo de bateria dos remapeadores continuam pendentes.
 
+### Ação econômica combinada — análise em 22/10/2026
+
+Novo relato: ao reiniciar ou sair de Só relógio, BT volta ligado, economia desliga e Wi-Fi
+às vezes liga. Sequência/causa ainda não capturadas; não atribuir a uma rotina Samsung
+específica sem evidência. [Viabilidade e custo](referencias/acao-economica-rapida.md).
+
+Priorizada a qualificação de um botão manual para economia Samsung ligada e BT desligado,
+com Wi-Fi opcional, usando backend/sessão já planejados. API comum de BT é limitada pelo
+target SDK; shell é candidato, sem teste Samsung novo. Comando AOSP de economia não comprova
+sucesso pelo exit code nem equivalência com a UI nativa. Ganho imediato proposto é reduzir
+esforço e evitar esquecimento, sem atribuir economia extra à mesma configuração manual.
+
+Reaplicação por evento de boot fica para etapa posterior, sem vigilância de rádios. O usuário
+informou que já usa rede móvel em Sempre desligado; preservar e confirmar essa referência.
+Nenhum código, controle, permissão, aparelho ou release alterado.
+Links/UTF-8/diff e bug sweep documentais revisados; testes Android não repetidos neste escopo.
+
 ### Continuação física
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.

@@ -77,6 +77,7 @@ O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. El
 - [Investigação profunda: Wear OS e preservação de alarmes](docs/referencias/wearos-profundo.md).
 - [Shizuku no Wear OS: estudo e prova no emulador](docs/referencias/shizuku-wearos.md).
 - [Remapear a pressão longa em Voltar: soluções prontas e integração](docs/referencias/remapeamento-botao-voltar.md).
+- [Ação rápida: economia ligada e Bluetooth desligado — vale o custo?](docs/referencias/acao-economica-rapida.md).
 - [Laboratório isolado de controles e restauração](docs/laboratory.md).
 - [Assinatura e publicação](docs/releases.md).
 - [Estudo do Flashpay: atalhos, interface e limites](docs/referencias/flashpay-wearos.md).

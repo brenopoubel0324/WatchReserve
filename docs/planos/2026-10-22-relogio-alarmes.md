@@ -170,6 +170,31 @@ e registrar o impedimento; não anunciar o novo modo como entregue.
 
 ## 3. Intervenções e entrega no app
 
+### Primeira ação prática — reaplicar o econômico habitual
+
+Prioridade acrescentada em 22/10/2026: o usuário relata perda de sua configuração ao reiniciar
+ou sair de Só relógio. Antes das restrições de apps, qualificar uma ação manual **“Aplicar
+econômico”**: ligar a economia Samsung e desligar Bluetooth; Wi-Fi desligado como opção separada.
+Reaplicar define estados, sem inverter toggles. Usar a mesma sessão e o backend aprovado,
+sem criar fork ou serviço de vigilância apenas para esse atalho.
+
+A [análise de custo e viabilidade](../referencias/acao-economica-rapida.md) separa esse ganho
+de conveniência de economia adicional. A API pública atual não permite desligar BT; controles
+shell e equivalência com a economia Samsung continuam sujeitos a prova física. Não assumir
+que `WRITE_SECURE_SETTINGS`, escrita de chave ou exit code zero comprovem as duas ações.
+
+Entregar o botão após comprovar aplicação/restauração, alarme e redução de esforço frente ao
+melhor caminho nativo, incluindo bootstrap quando necessário. Esse aceite é independente do
+ganho das restrições avançadas no portão 4; não libera o modo completo por antecipação.
+Manter o acesso Home/Só relógio e a confirmação Samsung existentes.
+
+Reaplicação pós-boot será opção posterior, pelo evento de desbloqueio e dentro da recuperação
+limitada já definida; sem observação permanente de BT/Wi-Fi. Confirmar se sair de Só relógio
+gera reboot nesse firmware. O usuário informou rede móvel em **Sempre desligado**; preservar
+esse estado na referência e confirmar na coleta, sem tratá-lo como ajuste novo do app.
+
+### Restrições adicionais
+
 Investigar nesta ordem, uma intervenção por vez, sempre contra a referência econômica atual:
 
 1. **Gemini:** identificar o pacote que hospeda o assistente, seus gatilhos e atividade.
@@ -309,6 +334,7 @@ portões do modo Relógio + alarmes, cuja implementação permanece pendente.
 - [ ] Preparação, recuperação temporária e perfil possuem restauração própria, serializada e persistente.
 - [ ] Reboot com/sem rede e economia ligada tem recuperação local utilizável após desbloqueio.
 - [ ] Watchdog/trabalho periódico não necessário ausente; custo residente necessário medido.
+- [ ] Ação pontual economia Samsung ligada + BT desligado comprovada, restaurável e com menos esforço.
 - [ ] Cada controle promovido passa por aplicação, verificação independente, conflito e restauração.
 - [ ] Alarme nativo e hora preservados em repouso, reboot e restauração, sem depender da ponte.
 - [ ] Modo manual integrado pelo painel, sem regressão dos três acessos Samsung.
