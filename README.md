@@ -63,7 +63,9 @@ O APK de desenvolvimento fica em `app/build/outputs/apk/debug/app-debug.apk`. El
 
 ## Documentação e validação
 
-- [Plano e progresso](docs/planos/2026-10-19-watchreserve.md).
+- [Próximo marco: Relógio + alarmes, com economia avançada](docs/planos/2026-10-22-relogio-alarmes.md).
+- [Revisão do plano: Shevery, recuperação e medição](docs/auditorias/2026-10-22-plano-relogio-alarmes.md).
+- [Plano e progresso histórico dos atalhos](docs/planos/2026-10-19-watchreserve.md).
 - [Compatibilidade por modelo e recursos](docs/compatibility.md).
 - [ADB, instalação e coleta privada de diagnóstico](docs/adb.md).
 - [Roteiro de teste físico e medição de autonomia](docs/validation.md).

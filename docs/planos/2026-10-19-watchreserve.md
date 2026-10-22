@@ -11,6 +11,12 @@ labels:
 
 # WatchReserve — plano e progresso
 
+**Registro histórico da primeira entrega e investigação de 19–21/10/2026.** O próximo marco
+e a prioridade atual estão no [plano Relógio + alarmes de 22/10/2026](2026-10-22-relogio-alarmes.md),
+com [revisão de execução](../auditorias/2026-10-22-plano-relogio-alarmes.md). As propostas de
+próximos passos abaixo descrevem a decisão da época; Shevery passa a ser o primeiro candidato
+e a recuperação local após reboot integra o aceite do novo marco.
+
 ## Resumo Trello
 
 Criar um app pessoal para Galaxy Watch com Wear OS/API 30+, da família Watch4 em diante, com Home, tile e complicação para facilitar o acesso ao modo Samsung “Só relógio”, além de uma central de ajustes manuais. Incluir variantes Classic, Pro, FE e Ultra quando atenderem à plataforma; excluir Tizen. O Watch8 LTE de 40 mm continua a primeira referência, com os três acessos comprovados em uso normal no firmware L325FXXS3AZF4. Publicar código, instruções, verificações e APKs assinados no repositório público `brenopoubel0324/WatchReserve`.

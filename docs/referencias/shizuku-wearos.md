@@ -1,5 +1,11 @@
 # Shizuku no Wear OS — viabilidade e próximo incremento
 
+**Atualização em 22/10/2026:** o [plano atual Relógio + alarmes](../planos/2026-10-22-relogio-alarmes.md)
+prioriza Shevery 14.4.0 e inclui recuperação após reboot, registros separados de restauração
+e medição R/P/E. A [auditoria do plano](../auditorias/2026-10-22-plano-relogio-alarmes.md)
+registra os contratos e riscos encontrados na fonte fixada. O restante desta página preserva
+a pesquisa e a decisão de 21/10/2026; “API original primeiro” não é a seleção atual do gerenciador.
+
 Pesquisa e prova em emulador em **21/10/2026**, por solicitação do usuário. Objetivo:
 investigar controles adicionais à economia Samsung, preservando relógio e alarmes, sem root.
 O APK publicado do WatchReserve não foi alterado e ainda não usa Shizuku.

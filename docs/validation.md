@@ -60,6 +60,11 @@ adb -s $watchSerial shell am force-stop dev.brenopoubel.watch8battery
 
 ## Medição de autonomia
 
+O protocolo A/B/C abaixo corresponde ao estudo original do custo do app de atalhos. O novo
+marco com ponte privilegiada usa o [protocolo R/P/E](planos/2026-10-22-relogio-alarmes.md#protocolo-rpe-do-novo-marco),
+com o mesmo APK instalado em todas as condições, custo necessário da ponte/depuração incluído
+e regra explícita para resolução dos percentuais. Não misture dados ou conclusões dos estudos.
+
 Separe três condições:
 
 - **A — referência atual:** configuração atual do usuário, sem o APK instalado.
@@ -68,7 +73,7 @@ Separe três condições:
 
 Compare A/B em três pares de janelas de 24 horas com rotinas semelhantes, alternando a ordem quando possível. Faça depois três pares B/C se controles adicionais forem liberados. Evite recarga, atualização de software, instalação de apps e mudança de mostrador dentro de uma janela. Registre treino, chamadas, sincronização e incidentes. Após instalar, atualizar ou recarregar, permita estabilização equivalente antes de iniciar cada condição.
 
-Durante todas as janelas, desconecte o ADB e desligue a depuração no relógio. Não deixe serviços de medição ou polling contínuo alterarem o consumo que está sendo avaliado. Registre bateria no começo e no final por leitura manual.
+Durante as janelas A/B/C deste estudo sem ponte, desconecte o ADB e desligue a depuração no relógio. Não deixe serviços de medição ou polling contínuo alterarem o consumo que está sendo avaliado. Registre bateria no começo e no final por leitura manual. No estudo avançado R/P/E, registre e inclua o custo de qualquer acesso indispensável ao modo, conforme o plano vinculado.
 
 ```text
 descarga (pontos percentuais/hora) = (bateria inicial - bateria final) / horas

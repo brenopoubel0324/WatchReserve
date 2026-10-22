@@ -1,8 +1,10 @@
 # Resultados técnicos
 
-Última revisão: 19/10/2026.
+Última revisão: 22/10/2026. As seções por versão preservam seu contexto histórico.
 
-## Evidência disponível
+## Evidência inicial — 19/10/2026
+
+Esta tabela registra o estado inicial, anterior à prova física de 21/10/2026 descrita abaixo.
 
 | Item | Resultado |
 |---|---|
@@ -225,8 +227,27 @@ restringido e nenhum ganho foi atribuído a eles. Fontes Android/Google/Samsung 
 de coleta/recuperação revisados no estudo. Apenas documentação mudou nessa atualização:
 links, UTF-8 e diff verificados; build e testes Android não repetidos, sem mudança no código.
 
+### Revisão do novo marco — 22/10/2026
+
+Publicado o [plano Relógio + alarmes](planos/2026-10-22-relogio-alarmes.md), com Shevery como
+primeiro candidato e recuperação local após reboot como requisito. A
+[revisão de execução](auditorias/2026-10-22-plano-relogio-alarmes.md) encontrou cinco lacunas
+altas e duas médias no plano recebido; a versão corrigida foi aprovada para execução em etapas.
+
+Inspeção da fonte Shevery 14.4.0 confirmou alteração de preferências ADB/prazo de autorização
+no bootstrap, watchdog habilitado por padrão, mecanismos periódicos e toolchain diferente
+da do app. Não demonstra custo energético nem funcionamento no Watch8. Incorporadas preparação
+restaurável, recuperação limitada após desbloqueio, controle único das sessões e medição R/P/E.
+
+Entrega apenas documental: UTF-8, links, estrutura, diff e bug sweep revisados. Build/lint/testes
+Android não repetidos, pois código e configuração não mudaram. Sem instalação/permissão nova,
+conexão ao relógio, controle implementado, APK ou release. Ganho de autonomia permanece não medido.
+
 ### Continuação física
 
 O APK já está instalado; abertura pelo app e os três acessos em uso normal foram comprovados no Watch8. A próxima etapa exige registrar o ciclo de vida e as medições do [roteiro físico](validation.md). Outros modelos e firmwares precisam de prova própria.
+
+Para economia avançada, executar primeiro o cliente de leitura e os portões do plano de
+22/10/2026; não iniciar restrições de Health/Gemini antes da restauração e proteção do alarme.
 
 Após cada etapa, atualizar esta página e as notas da release com o resultado real. Fingerprints, seriais, rede, dumps e dados pessoais ficam fora deste repositório público.
