@@ -1,6 +1,6 @@
 # WatchReserve
 
-> **Próxima direção (plano, não funcionalidade publicada):** [Economia progressiva e modular](docs/planos/2026-11-01-economia-progressiva.md) — perfis Completo, Equilibrado, Econômico e Extremo; escolha de apps/serviços opcionais; atalho nativo **Só relógio** preservado como máxima economia Samsung.
+> **Próxima direção (ainda não implementada):** [Economia progressiva e modular](docs/planos/2026-11-01-economia-progressiva.md) — perfis personalizados por funções, apps e serviços opcionais, preservando **Só relógio** como atalho nativo. A [auditoria do acesso Shizuku/Bridge](docs/auditorias/2026-11-01-shizuku-bridge-economia-progressiva.md) libera a prototipação sem privilégios e bloqueia controles reais até resolver segurança, recuperação e conformidade.
 
 [![Android](https://github.com/brenopoubel0324/WatchReserve/actions/workflows/android.yml/badge.svg)](https://github.com/brenopoubel0324/WatchReserve/actions/workflows/android.yml)
 
