@@ -11,6 +11,8 @@ labels:
 
 # Relógio + alarmes — plano de execução
 
+> **Plano histórico:** em 01/11/2026, a prioridade de produto foi ampliada para [economia progressiva e modular](2026-11-01-economia-progressiva.md). Os portões de segurança, recuperação e medição aqui documentados continuam válidos; “Só relógio” permanece como atalho independente, não como único perfil de economia.
+
 ## Resumo Trello
 
 Entregar um modo manual de economia avançada que preserve a hora e o alarme nativo criado
