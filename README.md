@@ -1,5 +1,7 @@
 # WatchReserve
 
+> **Próxima direção (plano, não funcionalidade publicada):** [Economia progressiva e modular](docs/planos/2026-11-01-economia-progressiva.md) — perfis Completo, Equilibrado, Econômico e Extremo; escolha de apps/serviços opcionais; atalho nativo **Só relógio** preservado como máxima economia Samsung.
+
 [![Android](https://github.com/brenopoubel0324/WatchReserve/actions/workflows/android.yml/badge.svg)](https://github.com/brenopoubel0324/WatchReserve/actions/workflows/android.yml)
 
 App pessoal de atalhos e economia para a linha Galaxy Watch com Wear OS, da família Watch4 em diante, incluindo variantes Classic, Pro, FE e Ultra com Android API 30 ou superior. Modelos com Tizen ficam fora do APK. O projeto usa Kotlin e Compose para Wear OS, funciona sem celular e não depende de backend. Veja a [matriz de compatibilidade](docs/compatibility.md).
