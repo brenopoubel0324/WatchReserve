@@ -8,7 +8,7 @@ labels: [wear-os, bateria, UX, reversibilidade]
 
 # WatchReserve — economia progressiva e modular
 
-**Plano de produto revisado em 01/11/2026.** Status: PROPOSTO / não implementado. Esta é a nova prioridade funcional do projeto. O plano [Relógio + alarmes de 22/10](2026-10-22-relogio-alarmes.md) permanece como histórico técnico e referência para bootstrap, recuperação e medições. Não alterar a v0.2.2 publicada nem remover seus atalhos.
+**Plano de produto revisado em 01/11/2026.** Status: PROPOSTO / não implementado. [Auditoria da arquitetura privilegiada](../auditorias/2026-11-01-shizuku-bridge-economia-progressiva.md): **REVISAR antes de controles reais**; P0/P1 podem avançar. Esta é a nova prioridade funcional do projeto. O plano [Relógio + alarmes de 22/10](2026-10-22-relogio-alarmes.md) permanece como histórico técnico e referência para bootstrap, recuperação e medições. Não alterar a v0.2.2 publicada nem remover seus atalhos.
 
 ## Visão de produto
 
@@ -51,29 +51,60 @@ O perfil Extremo não é garantia de autonomia próxima a “Só relógio”. Sa
 
 App Standby e AppOps podem ser alterados pelo próprio sistema e não garantem ganho; registrar estado efetivo, não apenas sucesso de comando. Alterações de serviços internos devem ser opt-in avançado e individualmente permitidas por combinação firmware/pacote, nunca por heurística genérica de nome. Não limpar dados, desinstalar pacotes de sistema ou alterar política global agressiva no MVP.
 
-## Arquitetura: separar UX de privilégio
+## Arquitetura: UX sem shell direto; Bridge como broker e executor limitado
 
-**Sem Bridge:** a UI oferece modelos, seleção, prévia, diagnóstico acessível e atalhos verificados para ajustes nativos. Não pode afirmar que desativou serviço sem permissão. Preferências não são mudanças de sistema.
+**Sem Bridge:** o app apresenta perfis, prévia, leitura permitida ao UID comum, atalhos para ajustes nativos e a entrada Samsung “Só relógio”. Não afirma ter desativado app ou serviço sem observação da mudança efetiva.
 
-**Com Bridge:** ativação e restauração de intervenções enumeradas, somente depois de identidade de aplicativo, certificado, versão/protocolo e autorização aprovados. O serviço shell não deve se manter residente quando desnecessário; medir seu custo.
+**Com Bridge (arquitetura-alvo, ainda NÃO implementada):**
 
-Os três diários da Bridge (preparation/recovery/profile) já possuem núcleo e testes de fixture; **não têm backend de escrita de produção nem IPC com controles**. A Bridge atualmente requer PC/ADB para iniciar após boot; não prometer recuperação autônoma sem prova física. Controles que não possam ser revertidos com o backend ausente devem ser recusados para perfis de usuário.
+```text
+WatchReserve (UID comum; sem Shizuku SDK/permissão de shell)
+    -> ProfileBrokerService explícito da Bridge (Binder próprio)
+       [reautentica UID/pacote/certificado/versão/capacidade]
+    -> JournalController + AtomicJournalStore (único dono no processo gerenciador)
+       [prepara originais, intenção durável, idempotência, conflito]
+    -> ProfileExecutorUserService (UID shell 2000 via infraestrutura Shizuku)
+       [revalida identidade do broker, operação tipada, alvo e allowlist]
+    -> Android PackageManager / AppOps / outras APIs QUALIFICADAS
+```
 
-Somente um controlador é dono dos diários de alterações, serializando UI/IPC/boot. O Lab permanece dono apenas de **receitas de leitura**, não dos diários de escrita. Não migrar diários entre IDs sem recuperação completa e autorização explícita. Atualizar contratos e texto de permissão da Bridge: o cliente atual admite somente a versão 0.2 de leitura e informa "somente leitura".
+O cliente final **não recebe Binder Shizuku, API genérica `transactRemote`, terminal, UserService arbitrário nem permissão `API_V23`**. O protocolo Shizuku é detalhe **interno da Bridge**, onde for tecnicamente e juridicamente admissível; não é a API do produto. O laboratório de leitura mantém seu contrato atual somente para desenvolvimento, até migração controlada.
+
+**Autenticação em dois pontos:** serviço Binder explícito exportado para cliente qualificado; conferir `Binder.getCallingUid()`, resolução unívoca UID → package, assinatura e versão/protocolo em **cada chamada**. Se os dois APKs forem assinados pelo mesmo certificado, usar também uma permissão Android `signature` própria; se não, usar verificação rigorosa de UID/certificado na implementação do Binder, sem assumir que uma permissão customizada genérica substitui a checagem. O executor shell deve aceitar somente o broker autorizado, revalidar o alvo/estado do sistema e restringir operações em sua própria fronteira; **nenhuma validação apenas na UI**. Não transportar um Binder privilegiado bruto para o app normal.
+
+**Conformidade da Bridge:** o manifesto atual declara `moe.shizuku.manager.permission.API_V23` e o README oficial do Shizuku proíbe declarar `moe.shizuku.manager.permission.*` em projetos derivados ([fonte oficial](https://github.com/RikkaApps/Shizuku#license)). **Bloqueio para distribuir nova Bridge.** Avaliar primeiro (a) contrato privado sem declarar o namespace proibido, com migração e testes de bootstrap/SDK; ou (b) autorização explícita dos mantenedores upstream. Não renomear a permissão isoladamente: o SDK e o servidor podem depender do nome legado. Não declarar conformidade antes de evidência verificável.
+
+**Restauração:** a Bridge gerencia os diários PREPARATION, RECOVERY e PROFILE; o Lab guarda somente receitas de diagnóstico, nunca uma cópia concorrente de perfil. A gravação por `AtomicFile` não serializa processos: todas as requisições e gatilhos de boot precisam passar pelo mesmo controlador proprietário. A aplicação por lote pode ficar parcialmente concluída; oferecer estados claros e rollback assistido, não prometer atomicidade de múltiplos controles. `requireIdle` precisa provar ausência de comandos ainda em voo.
+
+**Reboot e bateria:** o shell via ADB normalmente precisa ser reiniciado após reboot e a Bridge atual não se inicia sem PC. Até prova física do contrário, depois do reboot mostrar **Bridge desligada; intervenção ainda pode estar ativa; restauração indisponível até reautorizar/iniciar a Bridge**. Não oferecer perfis persistentes que possam cortar a rota de retorno. Uma operação não é "segura" só por ser persistente: o dispositivo deve continuar utilizável e oferecer recuperação praticável. Medir o custo do serviço shell e encerrá-lo quando sua ausência não comprometer restauração.
+
+**Estados de execução necessários:** `PREVIEW_ONLY`, `NEEDS_SETUP`, `READY`, `APPLYING`, `APPLIED_VERIFIED`, `PARTIAL`, `RESTORATION_BLOCKED`, `CONFLICT`, `RESTORED`. O app nunca mostra `APPLIED_VERIFIED` após abrir Configurações ou apenas receber ACK do shell.
+
+**Desativar serviço não é desativar processo:** distinguir `pm disable-user` para pacote, componente `ComponentName` individual, AppOp por operação, restrição de background e `force-stop` temporário. A identidade efetiva do alvo pode mudar por firmware, UID compartilhado, instalação e preferências do usuário. Proteções e dependências têm precedência sobre o perfil extremo.
 
 ## Plano em fases, do menor ao maior risco
 
-| Etapa | Entrega | Gate |
+| Etapa | Entrega | Gate verificável |
 |---|---|---|
-| P0 — UX do produto | Escolha de perfis, editor de capacidades/apps, prévia, opções de restauração, atalho Só relógio preservado; nenhuma escrita privilegiada | Wear 192 dp, fontes 1.0/1.3, fluxo intuitivo, testes de dependências e proteção |
-| P1 — Diagnóstico | Parser do ZIP das 13 consultas existentes, interpretação de erros e UID, hipóteses por app/serviço; exportação manual | Dados reais distinguem ausência/zero/erro e reset de contadores |
-| P2 — Contrato e backend restrito | Contrato tipado Lab↔Bridge; fixture allowlisted em AVD usando diário existente | apply/restore/duas execuções/crash/resposta perdida/conflito/revogação/IPC com identidade |
-| P3 — Watch8 físico | Coleta local sob economia Samsung, alarme, boot/rede e viabilidade da recuperação sem PC | Evidência física por firmware, com limitações e fail-closed |
-| P4 — Primeiros controles | Um controle de app e um de serviço **opcional verificado**; observar independência, impacto, restauração e dependências | Não afetar alarme, atualização, SystemUI, recovery; sem lista automática |
-| P5 — Integrar perfis avançados | Policy compiler + execução transacional de operações, progresso e estado parcial no app | Teste cross-repo, CI, UI, regressões das rotas atuais |
-| P6 — Autonomia | R/P/E com ponte no custo e três pares R/E 24h, se mensuração válida | Ganho consistente acima da resolução ou declarar inconclusivo |
+| P0 — UX sem privilégios | Cinco perfis, editor por função/app, estados honestos, prévia, rota “Só relógio” existente e restauração visível | Testes UI 192 dp/1.0/1.3, seleção/reversão de preferências sem efeitos de sistema |
+| P1 — Diagnóstico | Parser das 13 consultas atuais; interpretação por UID e erros; coleta acionada somente pelo usuário | Relatórios identificam indisponível, valor zero, timeout, reboot, dados truncados e comparação válida |
+| P2 — Contrato e conformidade | Decidir interface própria, assinatura/protocolo/UID, fronteiras do executor, identidade dos pacotes, namespace e migração do legado | Revisão de ameaça/contrato + prova de compatibilidade do protótipo **sem** novo privilégio ao app normal; bloqueio de release do namespace resolvido |
+| P3 — Backend de ensaio | Broker de testes + executor shell enumerado, **somente fixture AVD**, integrado ao diário da Bridge | apply→observar→matar gerenciador/shell→reconciliar→restaurar; conflito, replay, timeout, usuário errado, UID compartilhado e revogação recusados |
+| P4 — Watch8 físico | Leitura real no Samsung; qualificar bootstrap, reboot/rede, custo de shell e caminho de recuperação; verificar alarme sem ponte | Evidências do SM-L325F/firmware explícito; se recuperação falha, manter controls persistentes bloqueados |
+| P5 — Um alvo opcional por tipo | Controles progressivos de package, componente/serviço e AppOp, após allowlist e testes específicos | Observação independente, efeito, rollback exato, proteção do alarme, e estado parcial visível |
+| P6 — Integração final | Resolver capacidades e dependências no app principal, aplicar e restaurar por broker próprio | Compatibilidade entre APKs, CI cruzada, regressões Home/tile/complicação, interface simples |
+| P7 — Autonomia | Comparações R/P/E por capacidades preservadas, incluindo custo da Bridge | Três pares R/E de 24 h com integridade dos dados; ganho acima da resolução ou INCONCLUSIVO |
 
-P0 e P1 não dependem de P3; P4 e P5 não podem liberar controles físicos antes dos seus gates. Dar preferência a mudanças que persistem sem daemon, evitando ligar o Wear OS com mais um supervisor permanente.
+P0/P1 não exigem P4. **P5/P6 não liberam escrita em relógio físico sem os gates P2/P3/P4**. Não executar um "perfil de serviços" se o usuário não puder desfazer as mudanças em condições realistas de uso.
+
+## Cenários mínimos de aceite do produto
+
+- **Onboarding em poucos toques:** instalar o app → ver cinco perfis → personalizar sem conhecimento de ADB; ausência de Bridge produz `NEEDS_SETUP`, não falso sucesso; o atalho “Só relógio” ainda abre a confirmação Samsung.
+- **Função protegida:** escolher notificações, saúde ou alarmes deve recusar qualquer ação que afete dependência requerida, inclusive componente que sirva vários recursos.
+- **Perfil parcial:** entre cinco operações, a terceira falha → mostrar duas aplicadas e três pendentes/recusadas, com restauração acessível e journal preservado.
+- **Versões/identidades:** certificado errado, aplicação errada, UID compartilhado, versão desconhecida, protocolo incompatível, cliente revogado, Binder morto → negar escrita e manter journal.
+- **Reboot:** com/sem Bridge ativa, com/sem Wi-Fi e sem PC; uma intervenção persistente só é elegível quando o caminho de restauração foi comprovado para esse cenário.
+- **Medida comparável:** modo Completo e Econômico testados com mesmas capacidades relevantes, conectividade, uso e custo da Bridge; sem afirmação quantitativa antes de coleta válida.
 
 ## Segurança, testagem e rollout
 
@@ -85,6 +116,8 @@ P0 e P1 não dependem de P3; P4 e P5 não podem liberar controles físicos antes
 - Manter Android app release v0.2.2 sem mudanças enquanto a nova política está em desenvolvimento; usar branches, CI, PRs e explicitamente não incorporar SDK Shizuku ao app de atalhos sem necessidade.
 - Separar provas AVD, física Samsung e ganho medido. Matriz de compatibilidade por firmware. Rollback seguro antes de remover a Bridge.
 - **Sem root** como premissa; se dependências de plataforma impedirem uma ação, bloquear e explicar. Não permitir "desativar tudo" indiscriminadamente.
+- Revisão de release documental: `git diff --check`, links relativos, Markdown legível e histórico das duas PRs. Qualquer código futuro: Gradle build/lint/unit/instrumentado, testes cross-repo e checagem física correspondente; CI de documentação não valida permissões reais.
+
 
 ## Pendências e não objetivos
 
